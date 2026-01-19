@@ -3,52 +3,55 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 public class Xyxx {
-    static ArrayList<String> items = new ArrayList<>();
+    static ArrayList<Task> items = new ArrayList<>();
 
     public static void main(String[] args) {
         sendMessage(makeGreetMessage());
 
         try (Scanner scanner = new Scanner(System.in)) {
-            boolean exited = false;
-            while (!exited) {
+            while (true) {
                 String input = scanner.nextLine().strip();
 
-                Pattern splitPattern = Pattern.compile("(\\s+)");
+                if (input.toLowerCase().equals("bye"))
+                    break;
 
-                String[] splitResult = splitPattern.split(input, 2);
-                String firstWord = "", rest = "";
-                if (splitResult.length > 0) {
-                    firstWord = splitResult[0].toLowerCase();
-                }
-                if (splitResult.length > 1) {
-                    rest = splitResult[1];
-                }
-
-                switch (firstWord) {
-                    case "":
-                        sendMessage("Oh, remaining silent aren't we?");
-                        break;
-                    case "list":
-                        sendMessage(makeItemListMessage());
-                        break;
-                    case "bye":
-                        exited = true;
-                        break;
-                    case "add":
-                        if (rest.equals(""))
-                            sendMessage("Oop, there's nothing to add.");
-                        else {
-                            items.add(rest);
-                            sendMessage("Added: " + rest);
-                        }
-                        break;
-                    default:
-                        sendMessage(input);
-                }
+                processInput(input);
             }
         }
 
         sendMessage(makeExitMessage());
+    }
+
+    static void processInput(String input) {
+        Pattern splitPattern = Pattern.compile("(\\s+)");
+
+        String[] splitResult = splitPattern.split(input, 2);
+        String command = "", argument = "";
+        if (splitResult.length > 0) {
+            command = splitResult[0].toLowerCase();
+        }
+        if (splitResult.length > 1) {
+            argument = splitResult[1];
+        }
+
+        switch (command) {
+            case "":
+                sendMessage("Oh, remaining silent aren't we?");
+                break;
+            case "list":
+                sendMessage(makeItemListMessage());
+                break;
+            case "add":
+                if (argument.equals(""))
+                    sendMessage("Oop, there's nothing to add.");
+                else {
+                    items.add(new Task(argument));
+                    sendMessage("Added: " + argument);
+                }
+                break;
+            default:
+                sendMessage(input);
+        }
     }
 
     static String makeItemListMessage() {
@@ -57,7 +60,7 @@ public class Xyxx {
         }
         String message = "Let's do this!\n";
         for (int i = 0; i < items.size(); i++) {
-            message += (i + 1) + ". " + items.get(i) + "\n";
+            message += String.format("% 3d. %s\n", (i + 1), items.get(i));
         }
         return message.strip();
     }
