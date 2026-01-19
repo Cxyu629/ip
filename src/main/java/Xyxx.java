@@ -16,11 +16,12 @@ public class Xyxx {
                 Pattern splitPattern = Pattern.compile("(\\s+)");
 
                 String[] splitResult = splitPattern.split(input, 2);
-                String firstWord;
-                if (splitResult.length == 0) {
-                    firstWord = "";
-                } else {
+                String firstWord = "", rest = "";
+                if (splitResult.length > 0) {
                     firstWord = splitResult[0].toLowerCase();
+                }
+                if (splitResult.length > 1) {
+                    rest = splitResult[1];
                 }
 
                 switch (firstWord) {
@@ -33,6 +34,14 @@ public class Xyxx {
                     case "bye":
                         exited = true;
                         break;
+                    case "add":
+                        if (rest.equals(""))
+                            sendMessage("Oop, there's nothing to add.");
+                        else {
+                            items.add(rest);
+                            sendMessage("Added: " + rest);
+                        }
+                        break;
                     default:
                         sendMessage(input);
                 }
@@ -41,16 +50,16 @@ public class Xyxx {
 
         sendMessage(makeExitMessage());
     }
-    
+
     static String makeItemListMessage() {
         if (items.isEmpty()) {
             return "There's nothing here -_-";
         }
-        String message = "";
+        String message = "Let's do this!\n";
         for (int i = 0; i < items.size(); i++) {
-            message += (i + 1) + ". " + items.get(i);
+            message += (i + 1) + ". " + items.get(i) + "\n";
         }
-        return message;
+        return message.strip();
     }
 
     static String makeGreetMessage() {
