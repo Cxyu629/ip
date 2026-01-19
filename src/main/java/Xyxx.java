@@ -1,6 +1,20 @@
+import java.util.Scanner;
+
 public class Xyxx {
     public static void main(String[] args) {
         sendMessage(makeGreetMessage());
+
+        try (Scanner scanner = new Scanner(System.in)) {
+            while (true) {
+                String input = scanner.nextLine();
+
+                if (input.toLowerCase().equals("bye"))
+                    break;
+                else
+                    sendMessage(input);
+            }
+        }
+
         sendMessage(makeExitMessage());
     }
     
@@ -28,7 +42,10 @@ public class Xyxx {
     }
     
     public static void sendMessage(String message) {
-        System.out.println(message);
-        System.out.println("____________________________________________________________\n");
+        String delimiter = "____________________________________________________________\n";
+        String indent = " ".repeat(8);
+        System.out.println(indent + delimiter);
+        System.out.println(indent + message.replace("\n", "\n" + indent));
+        System.out.println(indent + delimiter);
     }
 }
