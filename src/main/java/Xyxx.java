@@ -92,5 +92,4 @@ public class Xyxx {
         System.out.println(indent + message.replace("\n", "\n" + indent));
         System.out.println(indent + delimiter);
     }
-
 }
