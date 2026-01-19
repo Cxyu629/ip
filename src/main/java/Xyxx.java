@@ -1,17 +1,35 @@
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 public class Xyxx {
     public static void main(String[] args) {
         sendMessage(makeGreetMessage());
 
         try (Scanner scanner = new Scanner(System.in)) {
-            while (true) {
-                String input = scanner.nextLine();
+            boolean exited = false;
+            while (!exited) {
+                String input = scanner.nextLine().strip();
 
-                if (input.toLowerCase().equals("bye"))
-                    break;
-                else
-                    sendMessage(input);
+                Pattern splitPattern = Pattern.compile("(\\s+)");
+
+                String[] splitResult = splitPattern.split(input, 2);
+                String firstWord;
+                if (splitResult.length == 0) {
+                    firstWord = "";
+                } else {
+                    firstWord = splitResult[0];
+                }
+
+                switch (firstWord) {
+                    case "":
+                        sendMessage("Oh, remaining silent are we?");
+                        break;
+                    case "bye":
+                        exited = true;
+                        break;
+                    default:
+                        sendMessage(input);
+                }
             }
         }
 
