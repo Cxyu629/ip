@@ -49,7 +49,7 @@ public class Xyxx {
                     sendMessage("Added: " + argument);
                 }
                 break;
-            case "mark":
+            case "mark": {
                 int taskNumber = Integer.parseInt(argument);
                 if (taskNumber < 1 || taskNumber > tasks.size()) {
                     sendMessage(String.format("Hmm I can't find task %d...", taskNumber));
@@ -58,6 +58,18 @@ public class Xyxx {
                     currentTask.markAsDone();
                     sendMessage(String.format("Alright, I have it marked!\n     %s", currentTask));
                 }
+            }
+                break;
+            case "unmark": {
+                int taskNumber = Integer.parseInt(argument);
+                if (taskNumber < 1 || taskNumber > tasks.size()) {
+                    sendMessage(String.format("Hmm I can't find task %d...", taskNumber));
+                } else {
+                    Task currentTask = tasks.get(taskNumber - 1);
+                    currentTask.unmarkAsDone();
+                    sendMessage(String.format("Alright, I have it unmarked!\n     %s", currentTask));
+                }
+            }
                 break;
             default:
                 sendMessage(input);
