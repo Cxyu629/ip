@@ -3,7 +3,7 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 public class Xyxx {
-    static ArrayList<Task> items = new ArrayList<>();
+    static ArrayList<Task> tasks = new ArrayList<>();
 
     public static void main(String[] args) {
         sendMessage(makeGreetMessage());
@@ -39,14 +39,24 @@ public class Xyxx {
                 sendMessage("Oh, remaining silent aren't we?");
                 break;
             case "list":
-                sendMessage(makeItemListMessage());
+                sendMessage(makeTaskListMessage());
                 break;
             case "add":
                 if (argument.equals(""))
                     sendMessage("Oop, there's nothing to add.");
                 else {
-                    items.add(new Task(argument));
+                    tasks.add(new Task(argument));
                     sendMessage("Added: " + argument);
+                }
+                break;
+            case "mark":
+                int taskNumber = Integer.parseInt(argument);
+                if (taskNumber < 1 || taskNumber > tasks.size()) {
+                    sendMessage(String.format("Hmm I can't find task %d...", taskNumber));
+                } else {
+                    Task currentTask = tasks.get(taskNumber - 1);
+                    currentTask.markAsDone();
+                    sendMessage(String.format("Alright, I have it marked!\n     %s", currentTask));
                 }
                 break;
             default:
@@ -54,13 +64,13 @@ public class Xyxx {
         }
     }
 
-    static String makeItemListMessage() {
-        if (items.isEmpty()) {
+    static String makeTaskListMessage() {
+        if (tasks.isEmpty()) {
             return "There's nothing here -_-";
         }
         String message = "Let's do this!\n";
-        for (int i = 0; i < items.size(); i++) {
-            message += String.format("% 3d. %s\n", (i + 1), items.get(i));
+        for (int i = 0; i < tasks.size(); i++) {
+            message += String.format("% 3d. %s\n", (i + 1), tasks.get(i));
         }
         return message.strip();
     }
