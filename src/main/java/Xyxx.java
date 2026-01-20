@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Xyxx {
@@ -41,12 +42,50 @@ public class Xyxx {
             case "list":
                 sendMessage(makeTaskListMessage());
                 break;
-            case "add":
+            case "todo":
                 if (argument.equals(""))
                     sendMessage("Oop, there's nothing to add.");
                 else {
-                    tasks.add(new Task(argument));
-                    sendMessage("Added: " + argument);
+                    TodoTask todo = new TodoTask(argument);
+                    tasks.add(todo);
+                    sendMessage("Added todo: " + todo);
+                }
+                break;
+            case "deadline":
+                if (argument.equals(""))
+                    sendMessage("Oop, there's nothing to add.");
+                else {
+                    Pattern deadlinePattern = Pattern.compile("(.+?)\\s+\\/by\\s+(.+)");
+                    Matcher matcher = deadlinePattern.matcher(argument);
+                    if (!matcher.matches()) {
+                        sendMessage(
+                                "I don't get it... Try formatting it like \"deadline <description> /by <due datetime>\".");
+                    } else {
+                        String description = matcher.group(1);
+                        String by = matcher.group(2);
+                        DeadlineTask deadline = new DeadlineTask(description, by);
+                        tasks.add(deadline);
+                        sendMessage("Added deadline: " + deadline);
+                    }
+                }
+                break;
+            case "event":
+                if (argument.equals(""))
+                    sendMessage("Oop, there's nothing to add.");
+                else {
+                    Pattern deadlinePattern = Pattern.compile("(.+?)\\s+\\/from\\s+(.+?)\\s+\\/to\\s+(.+?)");
+                    Matcher matcher = deadlinePattern.matcher(argument);
+                    if (!matcher.matches()) {
+                        sendMessage(
+                                "I don't get it... Try formatting it like \"event <description> /from <from datetime> /to <to datetime>\".");
+                    } else {
+                        String description = matcher.group(1);
+                        String from = matcher.group(2);
+                        String to = matcher.group(3);
+                        EventTask event = new EventTask(description, from, to);
+                        tasks.add(event);
+                        sendMessage("Added event: " + event);
+                    }
                 }
                 break;
             case "mark": {
