@@ -58,13 +58,13 @@ public class Xyxx {
                 handleUnmarkCommand(argument);
                 break;
             default:
-                sendMessage(input);
+                sendMessage("You said: " + input);
         }
     }
 
     static void handleTodoCommand(String argument) {
         if (argument.equals("")) {
-            sendMessage("Oop, there's nothing to add.");
+            sendMessage(CommandFailureMessage.emptyTaskDescription());
             return;
         }
 
@@ -75,16 +75,14 @@ public class Xyxx {
 
     static void handleDeadlineCommand(String argument) {
         if (argument.equals("")) {
-            sendMessage("Oop, there's nothing to add.");
+            sendMessage(CommandFailureMessage.emptyTaskDescription());
             return;
         }
 
         Pattern deadlinePattern = Pattern.compile("(.+?)\\s+\\/by\\s+(.+)");
         Matcher matcher = deadlinePattern.matcher(argument);
         if (!matcher.matches()) {
-            sendMessage("I don't get it... Try formatting it like "
-                    + "\"deadline <description> /by <due datetime>\""
-                    + ".");
+            sendMessage(CommandFailureMessage.invalidFormat("deadline <description> /by <due datetime>"));
             return;
         }
 
@@ -97,16 +95,15 @@ public class Xyxx {
 
     static void handleEventCommand(String argument) {
         if (argument.equals("")) {
-            sendMessage("Oop, there's nothing to add.");
+            sendMessage(CommandFailureMessage.emptyTaskDescription());
             return;
         }
 
         Pattern deadlinePattern = Pattern.compile("(.+?)\\s+\\/from\\s+(.+?)\\s+\\/to\\s+(.+?)");
         Matcher matcher = deadlinePattern.matcher(argument);
         if (!matcher.matches()) {
-            sendMessage("I don't get it... Try formatting it like "
-                    + "\"event <description> /from <from datetime> /to <to datetime>\""
-                    + ".");
+            sendMessage(CommandFailureMessage
+                    .invalidFormat("event <description> /from <from datetime> /to <to datetime>"));
             return;
         }
 
@@ -123,7 +120,7 @@ public class Xyxx {
         try {
             int taskNumber = Integer.parseInt(argument);
             if (taskNumber < 1 || taskNumber > tasks.size()) {
-                sendMessage(String.format("Hmm I can't find task %d...", taskNumber));
+                sendMessage(CommandFailureMessage.taskIndexOutOfRange(taskNumber));
                 return;
             }
 
@@ -131,7 +128,7 @@ public class Xyxx {
             currentTask.markAsDone();
             sendMessage(String.format("Alright, I have it marked!\n     %s", currentTask));
         } catch (NumberFormatException e) {
-            sendMessage(String.format("Oops, \"%s\" is not a number!", argument));
+            sendMessage(CommandFailureMessage.invalidTaskNumber(argument));
         }
     }
 
@@ -139,7 +136,7 @@ public class Xyxx {
         try {
             int taskNumber = Integer.parseInt(argument);
             if (taskNumber < 1 || taskNumber > tasks.size()) {
-                sendMessage(String.format("Hmm I can't find task %d...", taskNumber));
+                sendMessage(CommandFailureMessage.taskIndexOutOfRange(taskNumber));
                 return;
             }
 
@@ -147,7 +144,7 @@ public class Xyxx {
             currentTask.unmarkAsDone();
             sendMessage(String.format("Alright, I have it unmarked!\n     %s", currentTask));
         } catch (NumberFormatException e) {
-            sendMessage(String.format("Oops, \"%s\" is not a number!", argument));
+            sendMessage(CommandFailureMessage.invalidTaskNumber(argument));
         }
     }
 
