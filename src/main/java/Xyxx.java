@@ -57,8 +57,12 @@ public class Xyxx {
             case "unmark":
                 handleUnmarkCommand(argument);
                 break;
+            case "delete":
+                handleDeleteCommand(argument);
+                break;
             default:
                 sendMessage("You said: " + input);
+                break;
         }
     }
 
@@ -159,6 +163,22 @@ public class Xyxx {
             message += String.format("% 3d. %s\n", (i + 1), tasks.get(i));
         }
         sendMessage(message.strip());
+    }
+
+    static void handleDeleteCommand(String argument) {
+        try {
+            int taskNumber = Integer.parseInt(argument);
+            if (taskNumber < 1 || taskNumber > tasks.size()) {
+                sendMessage(CommandFailureMessage.taskIndexOutOfRange(taskNumber));
+                return;
+            }
+
+            Task currentTask = tasks.get(taskNumber - 1);
+            tasks.remove(taskNumber - 1);
+            sendMessage(String.format("Alright, I have it removed!\n     %s", currentTask));
+        } catch (NumberFormatException e) {
+            sendMessage(CommandFailureMessage.invalidTaskNumber(argument));
+        }
     }
 
     static String makeGreetMessage() {
