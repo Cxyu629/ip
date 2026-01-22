@@ -1,0 +1,10 @@
+list
+blah
+todo eat lunch
+event meeting /from 5 am /to 6 pm
+list
+mark 2
+mark 3
+unmark 2
+list
+bye
