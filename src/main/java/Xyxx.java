@@ -6,6 +6,12 @@ import java.util.regex.Pattern;
 public class Xyxx {
     static ArrayList<Task> tasks = new ArrayList<>();
 
+    enum TaskAction {
+        MARK,
+        UNMARK,
+        DELETE,
+    }
+
     public static void main(String[] args) {
         sendMessage(makeGreetMessage());
 
@@ -52,13 +58,13 @@ public class Xyxx {
                 handleEventCommand(argument);
                 break;
             case "mark":
-                handleMarkCommand(argument);
+                handleTaskActionCommand(argument, TaskAction.MARK);
                 break;
             case "unmark":
-                handleUnmarkCommand(argument);
+                handleTaskActionCommand(argument, TaskAction.UNMARK);
                 break;
             case "delete":
-                handleDeleteCommand(argument);
+                handleTaskActionCommand(argument, TaskAction.DELETE);
                 break;
             default:
                 sendMessage("You said: " + input);
@@ -120,7 +126,7 @@ public class Xyxx {
 
     }
 
-    static void handleMarkCommand(String argument) {
+    static void handleTaskActionCommand(String argument, TaskAction action) {
         try {
             int taskNumber = Integer.parseInt(argument);
             if (taskNumber < 1 || taskNumber > tasks.size()) {
@@ -129,24 +135,20 @@ public class Xyxx {
             }
 
             Task currentTask = tasks.get(taskNumber - 1);
-            currentTask.markAsDone();
-            sendMessage(String.format("Alright, I have it marked!\n     %s", currentTask));
-        } catch (NumberFormatException e) {
-            sendMessage(CommandFailureMessage.invalidTaskNumber(argument));
-        }
-    }
-
-    static void handleUnmarkCommand(String argument) {
-        try {
-            int taskNumber = Integer.parseInt(argument);
-            if (taskNumber < 1 || taskNumber > tasks.size()) {
-                sendMessage(CommandFailureMessage.taskIndexOutOfRange(taskNumber));
-                return;
+            switch (action) {
+                case MARK:
+                    currentTask.markAsDone();
+                    sendMessage(String.format("Alright, I have it marked!\n     %s", currentTask));
+                    break;
+                case UNMARK:
+                    currentTask.unmarkAsDone();
+                    sendMessage(String.format("Alright, I have it unmarked!\n     %s", currentTask));
+                    break;
+                case DELETE:
+                    tasks.remove(taskNumber - 1);
+                    sendMessage(String.format("Alright, I have it deleted!\n     %s", currentTask));
+                    break;
             }
-
-            Task currentTask = tasks.get(taskNumber - 1);
-            currentTask.unmarkAsDone();
-            sendMessage(String.format("Alright, I have it unmarked!\n     %s", currentTask));
         } catch (NumberFormatException e) {
             sendMessage(CommandFailureMessage.invalidTaskNumber(argument));
         }
@@ -163,22 +165,6 @@ public class Xyxx {
             message += String.format("% 3d. %s\n", (i + 1), tasks.get(i));
         }
         sendMessage(message.strip());
-    }
-
-    static void handleDeleteCommand(String argument) {
-        try {
-            int taskNumber = Integer.parseInt(argument);
-            if (taskNumber < 1 || taskNumber > tasks.size()) {
-                sendMessage(CommandFailureMessage.taskIndexOutOfRange(taskNumber));
-                return;
-            }
-
-            Task currentTask = tasks.get(taskNumber - 1);
-            tasks.remove(taskNumber - 1);
-            sendMessage(String.format("Alright, I have it removed!\n     %s", currentTask));
-        } catch (NumberFormatException e) {
-            sendMessage(CommandFailureMessage.invalidTaskNumber(argument));
-        }
     }
 
     static String makeGreetMessage() {
