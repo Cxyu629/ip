@@ -40,90 +40,128 @@ public class Xyxx {
                 sendMessage("Oh, remaining silent aren't we?");
                 break;
             case "list":
-                sendMessage(makeTaskListMessage());
+                handleListCommand();
                 break;
             case "todo":
-                if (argument.equals(""))
-                    sendMessage("Oop, there's nothing to add.");
-                else {
-                    TodoTask todo = new TodoTask(argument);
-                    tasks.add(todo);
-                    sendMessage("Added todo: " + todo);
-                }
+                handleTodoCommand(argument);
                 break;
             case "deadline":
-                if (argument.equals(""))
-                    sendMessage("Oop, there's nothing to add.");
-                else {
-                    Pattern deadlinePattern = Pattern.compile("(.+?)\\s+\\/by\\s+(.+)");
-                    Matcher matcher = deadlinePattern.matcher(argument);
-                    if (!matcher.matches()) {
-                        sendMessage(
-                                "I don't get it... Try formatting it like \"deadline <description> /by <due datetime>\".");
-                    } else {
-                        String description = matcher.group(1);
-                        String by = matcher.group(2);
-                        DeadlineTask deadline = new DeadlineTask(description, by);
-                        tasks.add(deadline);
-                        sendMessage("Added deadline: " + deadline);
-                    }
-                }
+                handleDeadlineCommand(argument);
                 break;
             case "event":
-                if (argument.equals(""))
-                    sendMessage("Oop, there's nothing to add.");
-                else {
-                    Pattern deadlinePattern = Pattern.compile("(.+?)\\s+\\/from\\s+(.+?)\\s+\\/to\\s+(.+?)");
-                    Matcher matcher = deadlinePattern.matcher(argument);
-                    if (!matcher.matches()) {
-                        sendMessage(
-                                "I don't get it... Try formatting it like \"event <description> /from <from datetime> /to <to datetime>\".");
-                    } else {
-                        String description = matcher.group(1);
-                        String from = matcher.group(2);
-                        String to = matcher.group(3);
-                        EventTask event = new EventTask(description, from, to);
-                        tasks.add(event);
-                        sendMessage("Added event: " + event);
-                    }
-                }
+                handleEventCommand(argument);
                 break;
-            case "mark": {
-                int taskNumber = Integer.parseInt(argument);
-                if (taskNumber < 1 || taskNumber > tasks.size()) {
-                    sendMessage(String.format("Hmm I can't find task %d...", taskNumber));
-                } else {
-                    Task currentTask = tasks.get(taskNumber - 1);
-                    currentTask.markAsDone();
-                    sendMessage(String.format("Alright, I have it marked!\n     %s", currentTask));
-                }
-            }
+            case "mark":
+                handleMarkCommand(argument);
                 break;
-            case "unmark": {
-                int taskNumber = Integer.parseInt(argument);
-                if (taskNumber < 1 || taskNumber > tasks.size()) {
-                    sendMessage(String.format("Hmm I can't find task %d...", taskNumber));
-                } else {
-                    Task currentTask = tasks.get(taskNumber - 1);
-                    currentTask.unmarkAsDone();
-                    sendMessage(String.format("Alright, I have it unmarked!\n     %s", currentTask));
-                }
-            }
+            case "unmark":
+                handleUnmarkCommand(argument);
                 break;
             default:
                 sendMessage(input);
         }
     }
 
-    static String makeTaskListMessage() {
-        if (tasks.isEmpty()) {
-            return "There's nothing here -_-";
+    static void handleTodoCommand(String argument) {
+        if (argument.equals("")) {
+            sendMessage("Oop, there's nothing to add.");
+            return;
         }
+
+        TodoTask todo = new TodoTask(argument);
+        tasks.add(todo);
+        sendMessage("Added todo: " + todo);
+    }
+
+    static void handleDeadlineCommand(String argument) {
+        if (argument.equals("")) {
+            sendMessage("Oop, there's nothing to add.");
+            return;
+        }
+
+        Pattern deadlinePattern = Pattern.compile("(.+?)\\s+\\/by\\s+(.+)");
+        Matcher matcher = deadlinePattern.matcher(argument);
+        if (!matcher.matches()) {
+            sendMessage("I don't get it... Try formatting it like "
+                    + "\"deadline <description> /by <due datetime>\""
+                    + ".");
+            return;
+        }
+
+        String description = matcher.group(1);
+        String by = matcher.group(2);
+        DeadlineTask deadline = new DeadlineTask(description, by);
+        tasks.add(deadline);
+        sendMessage("Added deadline: " + deadline);
+    }
+
+    static void handleEventCommand(String argument) {
+        if (argument.equals("")) {
+            sendMessage("Oop, there's nothing to add.");
+            return;
+        }
+
+        Pattern deadlinePattern = Pattern.compile("(.+?)\\s+\\/from\\s+(.+?)\\s+\\/to\\s+(.+?)");
+        Matcher matcher = deadlinePattern.matcher(argument);
+        if (!matcher.matches()) {
+            sendMessage("I don't get it... Try formatting it like "
+                    + "\"event <description> /from <from datetime> /to <to datetime>\""
+                    + ".");
+            return;
+        }
+
+        String description = matcher.group(1);
+        String from = matcher.group(2);
+        String to = matcher.group(3);
+        EventTask event = new EventTask(description, from, to);
+        tasks.add(event);
+        sendMessage("Added event: " + event);
+
+    }
+
+    static void handleMarkCommand(String argument) {
+        try {
+            int taskNumber = Integer.parseInt(argument);
+            if (taskNumber < 1 || taskNumber > tasks.size()) {
+                sendMessage(String.format("Hmm I can't find task %d...", taskNumber));
+                return;
+            }
+
+            Task currentTask = tasks.get(taskNumber - 1);
+            currentTask.markAsDone();
+            sendMessage(String.format("Alright, I have it marked!\n     %s", currentTask));
+        } catch (NumberFormatException e) {
+            sendMessage(String.format("Oops, \"%s\" is not a number!", argument));
+        }
+    }
+
+    static void handleUnmarkCommand(String argument) {
+        try {
+            int taskNumber = Integer.parseInt(argument);
+            if (taskNumber < 1 || taskNumber > tasks.size()) {
+                sendMessage(String.format("Hmm I can't find task %d...", taskNumber));
+                return;
+            }
+
+            Task currentTask = tasks.get(taskNumber - 1);
+            currentTask.unmarkAsDone();
+            sendMessage(String.format("Alright, I have it unmarked!\n     %s", currentTask));
+        } catch (NumberFormatException e) {
+            sendMessage(String.format("Oops, \"%s\" is not a number!", argument));
+        }
+    }
+
+    static void handleListCommand() {
+        if (tasks.isEmpty()) {
+            sendMessage("There's nothing here -_-");
+            return;
+        }
+
         String message = "Let's do this!\n";
         for (int i = 0; i < tasks.size(); i++) {
             message += String.format("% 3d. %s\n", (i + 1), tasks.get(i));
         }
-        return message.strip();
+        sendMessage(message.strip());
     }
 
     static String makeGreetMessage() {
