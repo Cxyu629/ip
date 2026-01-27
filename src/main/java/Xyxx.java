@@ -3,6 +3,11 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import task.DeadlineTask;
+import task.EventTask;
+import task.Task;
+import task.TodoTask;
+
 public class Xyxx {
     static ArrayList<Task> tasks = new ArrayList<>();
 
