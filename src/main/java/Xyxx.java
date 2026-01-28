@@ -1,10 +1,16 @@
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import task.DeadlineTask;
+import task.EventTask;
+import task.Task;
+import task.TodoTask;
+
 public class Xyxx {
-    static ArrayList<Task> tasks = new ArrayList<>();
+    static ArrayList<Task> tasks;
 
     enum TaskAction {
         MARK,
@@ -13,6 +19,13 @@ public class Xyxx {
     }
 
     public static void main(String[] args) {
+        try {
+            tasks = TasksStorage.load();
+        } catch (IOException e) {
+            sendMessage(String.format("Oh no! %s", e));
+            return;
+        }
+
         sendMessage(makeGreetMessage());
 
         try (Scanner scanner = new Scanner(System.in)) {
@@ -24,6 +37,13 @@ public class Xyxx {
 
                 processInput(input);
             }
+        }
+
+        try {
+            TasksStorage.save(tasks);
+        } catch (IOException e) {
+            sendMessage(String.format("Oh no! %s", e));
+            return;
         }
 
         sendMessage(makeExitMessage());
