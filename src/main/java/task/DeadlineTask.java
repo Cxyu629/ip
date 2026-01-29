@@ -1,12 +1,20 @@
 package task;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import datetime.PartialDateTime;
 
 public class DeadlineTask extends Task {
-    protected String by;
-    
-    public DeadlineTask(String description, String by) {
+    public static DeadlineTask loadInstance(DataInputStream in) throws IOException {
+        DeadlineTask task = new DeadlineTask(null, null);
+        task.load(in);
+        return task;
+    }
+
+    protected PartialDateTime by;
+
+    public DeadlineTask(String description, PartialDateTime by) {
         super(description);
         this.by = by;
     }
@@ -19,18 +27,12 @@ public class DeadlineTask extends Task {
     @Override
     public void save(DataOutputStream out) throws IOException {
         super.save(out);
-        out.writeUTF(by);
+        by.save(out);
     }
 
     @Override
     void load(DataInputStream in) throws IOException {
         super.load(in);
-        this.by = in.readUTF();
-    }
-    
-    public static DeadlineTask loadInstance(DataInputStream in) throws IOException {
-        DeadlineTask task = new DeadlineTask(null, null);
-        task.load(in);
-        return task;
+        this.by = PartialDateTime.loadInstance(in);
     }
 }

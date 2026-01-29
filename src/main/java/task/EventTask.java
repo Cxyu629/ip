@@ -3,12 +3,20 @@ package task;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import datetime.PartialDateTime;
 
 public class EventTask extends Task {
-    protected String from;
-    protected String to;
+    public static EventTask loadInstance(DataInputStream in) throws IOException {
+        EventTask task = new EventTask(null, null, null);
+        task.load(in);
+        return task;
+    }
 
-    public EventTask(String description, String from, String to) {
+    protected PartialDateTime from;
+
+    protected PartialDateTime to;
+
+    public EventTask(String description, PartialDateTime from, PartialDateTime to) {
         super(description);
         this.from = from;
         this.to = to;
@@ -22,20 +30,14 @@ public class EventTask extends Task {
     @Override
     public void save(DataOutputStream out) throws IOException {
         super.save(out);
-        out.writeUTF(from);
-        out.writeUTF(to);
+        from.save(out);
+        to.save(out);
     }
 
     @Override
     void load(DataInputStream in) throws IOException {
         super.load(in);
-        this.from = in.readUTF();
-        this.to = in.readUTF();
-    }
-
-    public static EventTask loadInstance(DataInputStream in) throws IOException {
-        EventTask task = new EventTask(null, null, null);
-        task.load(in);
-        return task;
+        this.from = PartialDateTime.loadInstance(in);
+        this.to = PartialDateTime.loadInstance(in);
     }
 }
