@@ -4,19 +4,20 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import datetime.PartialDateTime;
 import task.DeadlineTask;
 import task.EventTask;
 import task.Task;
 import task.TodoTask;
 
 public class Xyxx {
-    static ArrayList<Task> tasks;
-
     enum TaskAction {
         MARK,
         UNMARK,
         DELETE,
     }
+
+    static ArrayList<Task> tasks;
 
     public static void main(String[] args) {
         try {
@@ -104,6 +105,10 @@ public class Xyxx {
     }
 
     static void handleDeadlineCommand(String argument) {
+        final String INVALID_FORMAT_MESSAGE = CommandFailureMessage
+                .invalidFormat(
+                        String.format("deadline <description> /by %s", PartialDateTime.FORMAT_HINT));
+
         if (argument.equals("")) {
             sendMessage(CommandFailureMessage.emptyTaskDescription());
             return;
@@ -112,18 +117,29 @@ public class Xyxx {
         Pattern deadlinePattern = Pattern.compile("(.+?)\\s+\\/by\\s+(.+)");
         Matcher matcher = deadlinePattern.matcher(argument);
         if (!matcher.matches()) {
-            sendMessage(CommandFailureMessage.invalidFormat("deadline <description> /by <due datetime>"));
+            sendMessage(INVALID_FORMAT_MESSAGE);
             return;
         }
 
         String description = matcher.group(1);
-        String by = matcher.group(2);
+        String byString = matcher.group(2);
+        PartialDateTime by = PartialDateTime.fromString(byString);
+        if (by == null) {
+            sendMessage(INVALID_FORMAT_MESSAGE);
+            return;
+        }
+
         DeadlineTask deadline = new DeadlineTask(description, by);
         tasks.add(deadline);
         sendMessage("Added deadline: " + deadline);
     }
 
     static void handleEventCommand(String argument) {
+        final String INVALID_FORMAT_MESSAGE = CommandFailureMessage
+                .invalidFormat(
+                        String.format("event <description> /from %s /to %s", PartialDateTime.FORMAT_HINT,
+                                PartialDateTime.FORMAT_HINT));
+
         if (argument.equals("")) {
             sendMessage(CommandFailureMessage.emptyTaskDescription());
             return;
@@ -132,14 +148,20 @@ public class Xyxx {
         Pattern deadlinePattern = Pattern.compile("(.+?)\\s+\\/from\\s+(.+?)\\s+\\/to\\s+(.+?)");
         Matcher matcher = deadlinePattern.matcher(argument);
         if (!matcher.matches()) {
-            sendMessage(CommandFailureMessage
-                    .invalidFormat("event <description> /from <from datetime> /to <to datetime>"));
+            sendMessage(INVALID_FORMAT_MESSAGE);
             return;
         }
 
         String description = matcher.group(1);
-        String from = matcher.group(2);
-        String to = matcher.group(3);
+        String fromString = matcher.group(2);
+        String toString = matcher.group(3);
+        PartialDateTime from = PartialDateTime.fromString(fromString);
+        PartialDateTime to = PartialDateTime.fromString(toString);
+        if (from == null || to == null) {
+            sendMessage(INVALID_FORMAT_MESSAGE);
+            return;
+        }
+
         EventTask event = new EventTask(description, from, to);
         tasks.add(event);
         sendMessage("Added event: " + event);

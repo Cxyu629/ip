@@ -3,9 +3,8 @@ package task;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.Serializable;
 
-public class Task implements Serializable {
+public class Task {
     protected String description;
     protected boolean isDone;
 
