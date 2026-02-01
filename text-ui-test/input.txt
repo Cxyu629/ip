@@ -1,7 +1,7 @@
 list
 blah
 todo eat lunch
-event meeting /from 5 am /to 6 pm
+event meeting /from 2026-01-01 2300 /to 2026-01-02
 list
 mark 2
 mark 3
