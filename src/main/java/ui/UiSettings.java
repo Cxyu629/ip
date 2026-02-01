@@ -2,8 +2,8 @@ package ui;
 
 public record UiSettings(int messageWidth, int indent) {
     static class Builder {
-        private int messageWidth = 80;
-        private int indent = 4;
+        private int messageWidth = 70;
+        private int indent = 10;
 
         private Builder() {
         }

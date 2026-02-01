@@ -16,7 +16,7 @@ public class PartialDateTime {
     private LocalDateTime dateTime;
     private Precision precision;
 
-    public static final String FORMAT_HINT = "yyyy-mm-dd [HH:mm]";
+    public static final String FORMAT_HINT = "yyyy-mm-dd [HHmm]";
 
     private enum Precision {
         DATE_ONLY,
@@ -46,7 +46,7 @@ public class PartialDateTime {
         DateTimeFormatter fmt = new DateTimeFormatterBuilder()
                 .appendPattern("yyyy-MM-dd")
                 .optionalStart()
-                .appendPattern(" HH:mm")
+                .appendPattern(" HHmm")
                 .optionalEnd()
                 .toFormatter();
 

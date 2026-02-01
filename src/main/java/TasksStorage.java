@@ -38,8 +38,6 @@ public abstract class TasksStorage {
     }
 
     public static ArrayList<Task> load() throws IOException {
-        System.out.println(FILE.getAbsolutePath());
-
         if (!FILE.exists())
             return new ArrayList<Task>();
 
