@@ -1,3 +1,4 @@
+package storage;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -11,7 +12,7 @@ import task.EventTask;
 import task.Task;
 import task.TodoTask;
 
-public abstract class TasksStorage {
+public final class Storage {
     private static final String TASKS_DIR = "tasks.dat";
     
     private static final File FILE = new File(TASKS_DIR);

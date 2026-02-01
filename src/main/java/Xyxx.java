@@ -4,6 +4,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import datetime.PartialDateTime;
+import storage.Storage;
 import task.DeadlineTask;
 import task.EventTask;
 import task.Task;
@@ -27,7 +28,7 @@ public class Xyxx {
 
     public void run() {
         try {
-            tasks = TasksStorage.load();
+            tasks = Storage.load();
         } catch (IOException e) {
             ui.printMessage(String.format("Oh no! %s", e));
             return;
@@ -45,7 +46,7 @@ public class Xyxx {
         }
 
         try {
-            TasksStorage.save(tasks);
+            Storage.save(tasks);
         } catch (IOException e) {
             ui.printMessage(String.format("Oh no! %s", e));
             return;
