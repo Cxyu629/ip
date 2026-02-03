@@ -49,4 +49,28 @@ public class PartialDateTimeTest {
 
         assertEquals(original.toString(), loaded.toString());
     }
+
+    @Test
+    public void createDateTest() {
+        LocalDate date = LocalDate.of(2023, 5, 15);
+        PartialDateTime p = PartialDateTime.createDate(date);
+        assertNotNull(p);
+        assertEquals("May 15, 2023", p.toString());
+    }
+
+    @Test
+    public void createDateLeapYearTest() {
+        LocalDate date = LocalDate.of(2020, 2, 29);
+        PartialDateTime p = PartialDateTime.createDate(date);
+        assertNotNull(p);
+        assertEquals("Feb 29, 2020", p.toString());
+    }
+
+    @Test
+    public void createDateFirstDayOfYearTest() {
+        LocalDate date = LocalDate.of(2025, 1, 1);
+        PartialDateTime p = PartialDateTime.createDate(date);
+        assertNotNull(p);
+        assertEquals("Jan 01, 2025", p.toString());
+    }
 }
