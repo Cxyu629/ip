@@ -18,6 +18,10 @@ import xyxx.ui.Ui;
 import xyxx.parser.ParsedCommand;
 import xyxx.parser.Parser;
 
+/**
+ * Main application entry point that wires together the UI, parser and storage
+ * components and implements command handling logic.
+ */
 public class Xyxx {
     enum TaskAction {
         MARK,
@@ -25,6 +29,9 @@ public class Xyxx {
         DELETE,
     }
 
+    /**
+     * Application entry point.
+     */
     public static void main(String[] args) {
         new Xyxx().run();
     }
@@ -49,6 +56,10 @@ public class Xyxx {
 
     private Parser parser = new Parser(COMMANDS);
 
+    /**
+     * Runs the main read-eval-print loop: greets the user, reads input until
+     * "bye" is entered, processes commands and persists tasks on exit.
+     */
     public void run() {
         try {
             tasks = Storage.load();
