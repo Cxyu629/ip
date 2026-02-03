@@ -13,24 +13,18 @@ import command.CommandDefinition;
 import command.ParamDefinition;
 import datetime.PartialDateTime;
 
-final class Parser {
+public final class Parser {
 
     private final record ChunkToken(String chunk, int position) {
     }
 
-    private final record ParsedCommand(
-            String commandName,
-            String subject,
-            Map<String, String> params) {
-    }
-
     private final Map<String, CommandDefinition> registry;
 
-    Parser(Map<String, CommandDefinition> registry) {
+    public Parser(Map<String, CommandDefinition> registry) {
         this.registry = registry;
     }
 
-    ParsedCommand parse(String input) throws ParseException {
+    public ParsedCommand parse(String input) throws ParseException {
         List<ChunkToken> chunks = tokenize(input);
 
         String[] head = chunks.get(0).chunk().split("\\s+", 2);
@@ -39,7 +33,7 @@ final class Parser {
 
         CommandDefinition definition = registry.get(commandName);
         if (definition == null) {
-            throw new ParseException("Unknown command: " + commandName, 0);
+            return new ParsedCommand("", input, null);
         }
 
         Map<String, String> params = parseParams(definition, chunks.subList(1, chunks.size()));

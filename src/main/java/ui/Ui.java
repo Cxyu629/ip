@@ -25,4 +25,29 @@ public class Ui {
         System.out.print("> ");
         return scanner.nextLine();
     }
+
+    public void printGreetMessage() {
+        String logo = """
+                 \\o       o/
+                  v\\     /v
+                   <\\   />
+                     \\o/    o      o   \\o    o/  \\o    o/
+                      |    <|>    <|>   v\\  /v    v\\  /v
+                     / \\   < >    < >    <\\/>      <\\/>
+                   o/   \\o  \\o    o/     o/\\o      o/\\o
+                  /v     v\\  v\\  /v     /v  v\\    /v  v\\
+                 />       <\\  <\\/>     />    <\\  />    <\\
+                               /
+                              o
+                           __/>
+                """;
+
+        String message = "Hello from \n \n" + logo + "\nHow may I help you today?";
+        printMessage(message);
+    }
+
+    public void printExitMessage() {
+        String message = "See you soon, bye!";
+        printMessage(message);
+    }
 }

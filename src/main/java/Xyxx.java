@@ -1,8 +1,13 @@
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import command.CommandDefinition;
+import command.ParamDefinition;
 import datetime.PartialDateTime;
 import storage.Storage;
 import task.DeadlineTask;
@@ -10,6 +15,8 @@ import task.EventTask;
 import task.Task;
 import task.TodoTask;
 import ui.Ui;
+import parser.ParsedCommand;
+import parser.Parser;
 
 public class Xyxx {
     enum TaskAction {
@@ -22,9 +29,25 @@ public class Xyxx {
         new Xyxx().run();
     }
 
+    private static final Map<String, CommandDefinition> COMMANDS = Map.of(
+            "list", new CommandDefinition("list", false, List.of()),
+            "todo", new CommandDefinition("todo", true, List.of()),
+            "deadline",
+            new CommandDefinition("deadline", true,
+                    List.of(new ParamDefinition("by", true, ParamDefinition.Type.PARTIALDATETIME))),
+            "event",
+            new CommandDefinition("event", true,
+                    List.of(new ParamDefinition("from", true, ParamDefinition.Type.PARTIALDATETIME),
+                            new ParamDefinition("to", true, ParamDefinition.Type.PARTIALDATETIME))),
+            "mark", new CommandDefinition("mark", true, List.of()),
+            "unmark", new CommandDefinition("unmark", true, List.of()),
+            "delete", new CommandDefinition("delete", true, List.of()));
+
     private ArrayList<Task> tasks;
 
     private Ui ui = new Ui();
+
+    private Parser parser = new Parser(COMMANDS);
 
     public void run() {
         try {
@@ -34,7 +57,7 @@ public class Xyxx {
             return;
         }
 
-        ui.printMessage(makeGreetMessage());
+        ui.printGreetMessage();
 
         while (true) {
             String input = ui.getInput();
@@ -52,130 +75,95 @@ public class Xyxx {
             return;
         }
 
-        ui.printMessage(makeExitMessage());
+        ui.printExitMessage();
     }
 
     private void processInput(String input) {
-        Pattern splitPattern = Pattern.compile("(\\s+)");
+        try {
+            ParsedCommand parsed = parser.parse(input);
 
-        String[] splitResult = splitPattern.split(input, 2);
-        String command = "", argument = "";
-        if (splitResult.length > 0) {
-            command = splitResult[0].toLowerCase();
-        }
-        if (splitResult.length > 1) {
-            argument = splitResult[1];
-        }
-
-        switch (command) {
-            case "":
-                ui.printMessage("Oh, remaining silent aren't we?");
-                break;
-            case "list":
-                handleListCommand();
-                break;
-            case "todo":
-                handleTodoCommand(argument);
-                break;
-            case "deadline":
-                handleDeadlineCommand(argument);
-                break;
-            case "event":
-                handleEventCommand(argument);
-                break;
-            case "mark":
-                handleTaskActionCommand(argument, TaskAction.MARK);
-                break;
-            case "unmark":
-                handleTaskActionCommand(argument, TaskAction.UNMARK);
-                break;
-            case "delete":
-                handleTaskActionCommand(argument, TaskAction.DELETE);
-                break;
-            default:
-                ui.printMessage("You said: " + input);
-                break;
+            switch (parsed.commandName()) {
+                case "":
+                    if (parsed.subject().equals(""))
+                        ui.printMessage("Oh, remaining silent aren't we?");
+                    else
+                        ui.printMessage("You said: " + input);
+                    break;
+                case "list":
+                    handleListCommand();
+                    break;
+                case "todo":
+                    handleTodoCommand(parsed.subject());
+                    break;
+                case "deadline":
+                    handleDeadlineCommand(parsed.subject(), parsed.params());
+                    break;
+                case "event":
+                    handleEventCommand(parsed.subject(), parsed.params());
+                    break;
+                case "mark":
+                    handleTaskActionCommand(parsed.subject(), TaskAction.MARK);
+                    break;
+                case "unmark":
+                    handleTaskActionCommand(parsed.subject(), TaskAction.UNMARK);
+                    break;
+                case "delete":
+                    handleTaskActionCommand(parsed.subject(), TaskAction.DELETE);
+                    break;
+                default:
+                    break;
+            }
+        } catch (ParseException e) {
+            ui.printMessage(String.format("Oop! %s", e.getMessage()));
         }
     }
 
-    private void handleTodoCommand(String argument) {
-        if (argument.equals("")) {
+    private void handleTodoCommand(String subject) {
+        if (subject.equals("")) {
             ui.printMessage(CommandFailureMessage.emptyTaskDescription());
             return;
         }
 
-        TodoTask todo = new TodoTask(argument);
+        TodoTask todo = new TodoTask(subject);
         tasks.add(todo);
         ui.printMessage("Added todo: " + todo);
     }
 
-    private void handleDeadlineCommand(String argument) {
-        final String INVALID_FORMAT_MESSAGE = CommandFailureMessage
-                .invalidFormat(
-                        String.format("deadline <description> /by %s", PartialDateTime.FORMAT_HINT));
-
-        if (argument.equals("")) {
+    private void handleDeadlineCommand(String subject, Map<String, String> params) {
+        if (subject.equals("")) {
             ui.printMessage(CommandFailureMessage.emptyTaskDescription());
             return;
         }
 
-        Pattern deadlinePattern = Pattern.compile("(.+?)\\s+\\/by\\s+(.+)");
-        Matcher matcher = deadlinePattern.matcher(argument);
-        if (!matcher.matches()) {
-            ui.printMessage(INVALID_FORMAT_MESSAGE);
-            return;
-        }
-
-        String description = matcher.group(1);
-        String byString = matcher.group(2);
+        String description = subject;
+        String byString = params.get("by");
         PartialDateTime by = PartialDateTime.fromString(byString);
-        if (by == null) {
-            ui.printMessage(INVALID_FORMAT_MESSAGE);
-            return;
-        }
 
         DeadlineTask deadline = new DeadlineTask(description, by);
         tasks.add(deadline);
         ui.printMessage("Added deadline: " + deadline);
     }
 
-    private void handleEventCommand(String argument) {
-        final String INVALID_FORMAT_MESSAGE = CommandFailureMessage
-                .invalidFormat(
-                        String.format("event <description> /from %s /to %s", PartialDateTime.FORMAT_HINT,
-                                PartialDateTime.FORMAT_HINT));
-
-        if (argument.equals("")) {
+    private void handleEventCommand(String subject, Map<String, String> params) {
+        if (subject.equals("")) {
             ui.printMessage(CommandFailureMessage.emptyTaskDescription());
             return;
         }
 
-        Pattern deadlinePattern = Pattern.compile("(.+?)\\s+\\/from\\s+(.+?)\\s+\\/to\\s+(.+?)");
-        Matcher matcher = deadlinePattern.matcher(argument);
-        if (!matcher.matches()) {
-            ui.printMessage(INVALID_FORMAT_MESSAGE);
-            return;
-        }
-
-        String description = matcher.group(1);
-        String fromString = matcher.group(2);
-        String toString = matcher.group(3);
+        String description = subject;
+        String fromString = params.get("from");
+        String toString = params.get("to");
         PartialDateTime from = PartialDateTime.fromString(fromString);
         PartialDateTime to = PartialDateTime.fromString(toString);
-        if (from == null || to == null) {
-            ui.printMessage(INVALID_FORMAT_MESSAGE);
-            return;
-        }
 
         EventTask event = new EventTask(description, from, to);
         tasks.add(event);
         ui.printMessage("Added event: " + event);
-
     }
 
-    private void handleTaskActionCommand(String argument, TaskAction action) {
+    private void handleTaskActionCommand(String subject, TaskAction action) {
         try {
-            int taskNumber = Integer.parseInt(argument);
+            int taskNumber = Integer.parseInt(subject);
             if (taskNumber < 1 || taskNumber > tasks.size()) {
                 ui.printMessage(CommandFailureMessage.taskIndexOutOfRange(taskNumber));
                 return;
@@ -197,7 +185,7 @@ public class Xyxx {
                     break;
             }
         } catch (NumberFormatException e) {
-            ui.printMessage(CommandFailureMessage.invalidTaskNumber(argument));
+            ui.printMessage(CommandFailureMessage.invalidTaskNumber(subject));
         }
     }
 
@@ -212,28 +200,5 @@ public class Xyxx {
             message += String.format("% 3d. %s\n", (i + 1), tasks.get(i));
         }
         ui.printMessage(message.strip());
-    }
-
-    private String makeGreetMessage() {
-        String logo = """
-                 \\o       o/
-                  v\\     /v
-                   <\\   />
-                     \\o/    o      o   \\o    o/  \\o    o/
-                      |    <|>    <|>   v\\  /v    v\\  /v
-                     / \\   < >    < >    <\\/>      <\\/>
-                   o/   \\o  \\o    o/     o/\\o      o/\\o
-                  /v     v\\  v\\  /v     /v  v\\    /v  v\\
-                 />       <\\  <\\/>     />    <\\  />    <\\
-                               /
-                              o
-                           __/>
-                """;
-
-        return "Hello from \n \n" + logo + "\nHow may I help you today?";
-    }
-
-    private String makeExitMessage() {
-        return "See you soon, bye!";
     }
 }
