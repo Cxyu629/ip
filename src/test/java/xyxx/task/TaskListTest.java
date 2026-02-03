@@ -45,4 +45,43 @@ public class TaskListTest {
 
         assertEquals(original.toString(), loaded.toString());
     }
+
+    @Test
+    public void findBySubstringTest() {
+        TaskList list = new TaskList();
+        list.add(new TodoTask("Buy milk"));
+        list.add(new TodoTask("Read book"));
+
+        TaskList found = list.filterByKeyword("buy");
+        assertEquals(1, found.size());
+        assertTrue(found.get(0).toString().contains("Buy milk"));
+    }
+
+    @Test
+    public void findCaseInsensitiveTest() {
+        TaskList list = new TaskList();
+        list.add(new TodoTask("Buy milk"));
+        list.add(new TodoTask("buy cookies"));
+
+        TaskList found = list.filterByKeyword("BUY");
+        assertEquals(2, found.size());
+    }
+
+    @Test
+    public void findWithDatetimeTaskTest() {
+        TaskList list = new TaskList();
+        list.add(new DeadlineTask("Submit report", PartialDateTime.createDateTime(LocalDateTime.of(2022, 6, 1, 12, 0))));
+        list.add(new TodoTask("Submit tax"));
+
+        TaskList found = list.filterByKeyword("submit");
+        assertEquals(2, found.size());
+    }
+
+    @Test
+    public void noMatchReturnsEmptyTest() {
+        TaskList list = new TaskList();
+        list.add(new TodoTask("Alpha"));
+        TaskList found = list.filterByKeyword("beta");
+        assertEquals(0, found.size());
+    }
 }
