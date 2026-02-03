@@ -41,7 +41,8 @@ public class Xyxx {
                             new ParamDefinition("to", true, ParamDefinition.Type.PARTIALDATETIME))),
             "mark", new CommandDefinition("mark", true, List.of()),
             "unmark", new CommandDefinition("unmark", true, List.of()),
-            "delete", new CommandDefinition("delete", true, List.of()));
+            "delete", new CommandDefinition("delete", true, List.of()),
+            "find", new CommandDefinition("find", true, List.of()));
 
     private TaskList tasks;
 
@@ -109,6 +110,9 @@ public class Xyxx {
                     break;
                 case "delete":
                     handleTaskActionCommand(parsed.subject(), TaskAction.DELETE);
+                    break;
+                case "find":
+                    handleFindCommand(parsed.subject());
                     break;
                 default:
                     break;
@@ -187,6 +191,22 @@ public class Xyxx {
         } catch (NumberFormatException e) {
             ui.printMessage(CommandFailureMessage.invalidTaskNumber(subject));
         }
+    }
+
+    private void handleFindCommand(String subject) {
+        if (subject.isBlank()) {
+            ui.printMessage(CommandFailureMessage.invalidFormat("find <query>"));
+            return;
+        }
+
+        TaskList found = tasks.filterByKeyword(subject.strip());
+
+        if (found.size() == 0) {
+            ui.printMessage(String.format("No tasks found matching \"%s\"", subject));
+            return;
+        }
+
+        ui.printMessage("Found tasks:\n" + found.toString());
     }
 
     private void handleListCommand() {

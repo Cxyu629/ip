@@ -32,6 +32,29 @@ public final class TaskList {
         return tasks.size();
     }
 
+    /**
+     * @param keyword
+     * @return
+     */
+    /**
+     * Filters the task list by searching for tasks whose descriptions contain the
+     * specified keyword.
+     * The search is case-insensitive.
+     *
+     * @param keyword the keyword to search for
+     * @return a new TaskList containing only tasks whose descriptions contain the
+     *         keyword
+     */
+    public TaskList filterByKeyword(String keyword) {
+        TaskList filteredList = new TaskList();
+        for (Task task : tasks) {
+            if (task.description.toLowerCase().contains(keyword.toLowerCase())) {
+                filteredList.add(task);
+            }
+        }
+        return filteredList;
+    }
+
     void load(DataInputStream in) throws IOException {
         int taskType;
         while ((taskType = in.read()) != -1) {
