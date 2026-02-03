@@ -1,11 +1,7 @@
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import command.CommandDefinition;
 import command.ParamDefinition;
 import datetime.PartialDateTime;
@@ -13,6 +9,7 @@ import storage.Storage;
 import task.DeadlineTask;
 import task.EventTask;
 import task.Task;
+import task.TaskList;
 import task.TodoTask;
 import ui.Ui;
 import parser.ParsedCommand;
@@ -43,7 +40,7 @@ public class Xyxx {
             "unmark", new CommandDefinition("unmark", true, List.of()),
             "delete", new CommandDefinition("delete", true, List.of()));
 
-    private ArrayList<Task> tasks;
+    private TaskList tasks;
 
     private Ui ui = new Ui();
 
@@ -190,15 +187,12 @@ public class Xyxx {
     }
 
     private void handleListCommand() {
-        if (tasks.isEmpty()) {
+        if (tasks.size() == 0) {
             ui.printMessage("There's nothing here -_-");
             return;
         }
 
         String message = "Let's do this!\n";
-        for (int i = 0; i < tasks.size(); i++) {
-            message += String.format("% 3d. %s\n", (i + 1), tasks.get(i));
-        }
-        ui.printMessage(message.strip());
+        ui.printMessage(message + tasks.toString());
     }
 }
