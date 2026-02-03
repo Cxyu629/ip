@@ -119,6 +119,9 @@ public class Xyxx {
             case "delete":
                 handleTaskActionCommand(parsed.subject(), TaskAction.DELETE);
                 break;
+            case "find":
+                handleFindCommand(parsed.subject());
+                break;
             default:
                 break;
             }
