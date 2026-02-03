@@ -6,10 +6,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * A container for {@link Task} instances with convenience methods for
- * serialization and common list operations.
+ * A container for {@link Task} instances with convenience methods for serialization and common list
+ * operations.
  */
 public final class TaskList {
+    /**
+     * Loads a {@link TaskList} from the input stream.
+     */
+    public static TaskList loadInstance(DataInputStream in) throws IOException {
+        TaskList taskList = new TaskList();
+        taskList.load(in);
+        return taskList;
+    }
+
     ArrayList<Task> tasks = new ArrayList<>();
 
     /**
@@ -55,40 +64,25 @@ public final class TaskList {
     }
 
     /**
-     * Loads tasks from the input stream until EOF. The stream is expected to
-     * contain a task type byte followed by the task's serialized form.
+     * Filters the task list by searching for tasks whose descriptions contain the specified
+     * keyword. The search is case-insensitive.
      *
-     * @param in the input stream to read from
-     * @throws IOException if an I/O error occurs
+     * @param keyword the keyword to search for
+     * @return a new TaskList containing only tasks whose descriptions contain the keyword
      */
-    void load(DataInputStream in) throws IOException {
-        int taskType;
-        while ((taskType = in.read()) != -1) {
-            Task task = switch (taskType) {
-            case 1 -> TodoTask.loadInstance(in);
-            case 2 -> EventTask.loadInstance(in);
-            case 3 -> DeadlineTask.loadInstance(in);
-            default -> null;
-            };
-
-            if (task != null) {
-                tasks.add(task);
+    public TaskList filterByKeyword(String keyword) {
+        TaskList filteredList = new TaskList();
+        for (Task task : tasks) {
+            if (task.description.toLowerCase().contains(keyword.toLowerCase())) {
+                filteredList.add(task);
             }
         }
+        return filteredList;
     }
 
     /**
-     * Loads a {@link TaskList} from the input stream.
-     */
-    public static TaskList loadInstance(DataInputStream in) throws IOException {
-        TaskList taskList = new TaskList();
-        taskList.load(in);
-        return taskList;
-    }
-
-    /**
-     * Saves all tasks to the provided output stream using a simple type
-     * byte followed by each task's serialized form.
+     * Saves all tasks to the provided output stream using a simple type byte followed by each
+     * task's serialized form.
      */
     public void save(DataOutputStream out) throws IOException {
         for (Task task : tasks) {
@@ -116,5 +110,28 @@ public final class TaskList {
             message.append(String.format("% 3d. %s\n", (i + 1), tasks.get(i)));
         }
         return message.toString().stripTrailing();
+    }
+
+    /**
+     * Loads tasks from the input stream until EOF. The stream is expected to contain a task type
+     * byte followed by the task's serialized form.
+     *
+     * @param in the input stream to read from
+     * @throws IOException if an I/O error occurs
+     */
+    void load(DataInputStream in) throws IOException {
+        int taskType;
+        while ((taskType = in.read()) != -1) {
+            Task task = switch (taskType) {
+            case 1 -> TodoTask.loadInstance(in);
+            case 2 -> EventTask.loadInstance(in);
+            case 3 -> DeadlineTask.loadInstance(in);
+            default -> null;
+            };
+
+            if (task != null) {
+                tasks.add(task);
+            }
+        }
     }
 }
