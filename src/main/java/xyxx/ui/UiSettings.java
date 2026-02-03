@@ -14,8 +14,7 @@ public record UiSettings(int messageWidth, int indent) {
         private int messageWidth = 70;
         private int indent = 10;
 
-        private Builder() {
-        }
+        private Builder() {}
 
         /**
          * Sets the width used for border lines.
