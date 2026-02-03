@@ -1,19 +1,22 @@
+package xyxx;
+
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
-import command.CommandDefinition;
-import command.ParamDefinition;
-import datetime.PartialDateTime;
-import storage.Storage;
-import task.DeadlineTask;
-import task.EventTask;
-import task.Task;
-import task.TaskList;
-import task.TodoTask;
-import ui.Ui;
-import parser.ParsedCommand;
-import parser.Parser;
+
+import xyxx.command.CommandDefinition;
+import xyxx.command.ParamDefinition;
+import xyxx.datetime.PartialDateTime;
+import xyxx.storage.Storage;
+import xyxx.task.DeadlineTask;
+import xyxx.task.EventTask;
+import xyxx.task.Task;
+import xyxx.task.TaskList;
+import xyxx.task.TodoTask;
+import xyxx.ui.Ui;
+import xyxx.parser.ParsedCommand;
+import xyxx.parser.Parser;
 
 public class Xyxx {
     enum TaskAction {

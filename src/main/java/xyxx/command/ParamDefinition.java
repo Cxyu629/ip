@@ -1,4 +1,4 @@
-package command;
+package xyxx.command;
 
 public record ParamDefinition(String name, boolean isRequired, Type type) {
     public enum Type {

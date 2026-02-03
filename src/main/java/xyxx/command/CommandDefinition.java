@@ -1,4 +1,4 @@
-package command;
+package xyxx.command;
 
 import java.util.List;
 

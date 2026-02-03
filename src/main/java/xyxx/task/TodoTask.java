@@ -1,4 +1,4 @@
-package task;
+package xyxx.task;
 
 import java.io.DataInputStream;
 import java.io.IOException;

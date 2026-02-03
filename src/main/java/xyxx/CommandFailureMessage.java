@@ -1,3 +1,5 @@
+package xyxx;
+
 public abstract class CommandFailureMessage {
     public static String invalidTaskNumber(String argument) {
         return String.format("Oops, \"%s\" should be a task number!", argument);

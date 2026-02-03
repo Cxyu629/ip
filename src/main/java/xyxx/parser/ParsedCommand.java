@@ -1,4 +1,4 @@
-package parser;
+package xyxx.parser;
 
 import java.util.Map;
 

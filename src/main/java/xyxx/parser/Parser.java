@@ -1,4 +1,4 @@
-package parser;
+package xyxx.parser;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -9,9 +9,9 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import command.CommandDefinition;
-import command.ParamDefinition;
-import datetime.PartialDateTime;
+import xyxx.command.CommandDefinition;
+import xyxx.command.ParamDefinition;
+import xyxx.datetime.PartialDateTime;
 
 public final class Parser {
 
