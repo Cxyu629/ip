@@ -2,5 +2,6 @@ package xyxx.command;
 
 import java.util.List;
 
-public final record CommandDefinition(String command, boolean hasSubject, List<ParamDefinition> params) {
+public final record CommandDefinition(String command, boolean hasSubject,
+        List<ParamDefinition> params) {
 }

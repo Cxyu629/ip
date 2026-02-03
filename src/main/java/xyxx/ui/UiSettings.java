@@ -5,8 +5,7 @@ public record UiSettings(int messageWidth, int indent) {
         private int messageWidth = 70;
         private int indent = 10;
 
-        private Builder() {
-        }
+        private Builder() {}
 
         public Builder setMessageWidth(int messageWidth) {
             this.messageWidth = messageWidth;
@@ -22,6 +21,7 @@ public record UiSettings(int messageWidth, int indent) {
             return new UiSettings(this.messageWidth, this.indent);
         }
     }
+
     public static Builder builder() {
         return new Builder();
     }

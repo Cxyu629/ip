@@ -54,8 +54,8 @@ public final class Parser {
         return chunks;
     }
 
-    private Map<String, String> parseParams(CommandDefinition definition, List<ChunkToken> paramChunks)
-            throws ParseException {
+    private Map<String, String> parseParams(CommandDefinition definition,
+            List<ChunkToken> paramChunks) throws ParseException {
         Map<String, String> params = new HashMap<>();
         Pattern paramPattern = Pattern.compile("^\\/(\\w+)(\\s+(.*))?$");
 
@@ -72,7 +72,8 @@ public final class Parser {
                 validateParam(paramDef.get(), value, chunkToken.position());
                 params.put(key, value);
             } else {
-                throw new ParseException("Invalid parameter format: " + chunk, chunkToken.position());
+                throw new ParseException("Invalid parameter format: " + chunk,
+                        chunkToken.position());
             }
         }
 
@@ -86,14 +87,11 @@ public final class Parser {
     }
 
     private Optional<ParamDefinition> findParamDef(CommandDefinition definition, String paramName) {
-        return definition
-                .params()
-                .stream()
-                .filter(p -> p.name().equals(paramName))
-                .findFirst();
+        return definition.params().stream().filter(p -> p.name().equals(paramName)).findFirst();
     }
 
-    private void validateParam(ParamDefinition paramDef, String value, int position) throws ParseException {
+    private void validateParam(ParamDefinition paramDef, String value, int position)
+            throws ParseException {
         if (paramDef.isRequired() && value.isBlank()) {
             throw new ParseException("Parameter " + paramDef.name() + " is required.", position);
         }
@@ -101,20 +99,22 @@ public final class Parser {
             return;
         }
         switch (paramDef.type()) {
-            case STRING:
-                break;
-            case NUMBER:
-                try {
-                    Double.parseDouble(value);
-                } catch (NumberFormatException e) {
-                    throw new ParseException("Invalid value for number parameter: " + paramDef.name(), position);
-                }
-                break;
-            case PARTIALDATETIME:
-                if (PartialDateTime.fromString(value) == null) {
-                    throw new ParseException("Invalid value for datetime parameter: " + paramDef.name(), position);
-                }
-                break;
+        case STRING:
+            break;
+        case NUMBER:
+            try {
+                Double.parseDouble(value);
+            } catch (NumberFormatException e) {
+                throw new ParseException("Invalid value for number parameter: " + paramDef.name(),
+                        position);
+            }
+            break;
+        case PARTIALDATETIME:
+            if (PartialDateTime.fromString(value) == null) {
+                throw new ParseException("Invalid value for datetime parameter: " + paramDef.name(),
+                        position);
+            }
+            break;
         }
     }
 }

@@ -19,8 +19,7 @@ public class PartialDateTime {
     public static final String FORMAT_HINT = "yyyy-mm-dd [HHmm]";
 
     private enum Precision {
-        DATE_ONLY,
-        DATE_TIME,
+        DATE_ONLY, DATE_TIME,
     }
 
     private PartialDateTime(LocalDateTime dateTime, Precision precision) {
@@ -37,18 +36,15 @@ public class PartialDateTime {
     }
 
     /**
-     * Parses and converts a datetime string in the format specified in FORMAT_HINT to {@link PartialDateTime}.
+     * Parses and converts a datetime string in the format specified in FORMAT_HINT to
+     * {@link PartialDateTime}.
      *
      * @param dateTime
-     * @return {@link PartialDateTime} if parsing succeeds, otherwise <code>null</code>.
+     * @return {@link PartialDateTime} if parsing succeeds, otherwise {@code null}.
      */
     public static PartialDateTime fromString(String dateTime) {
-        DateTimeFormatter fmt = new DateTimeFormatterBuilder()
-                .appendPattern("yyyy-MM-dd")
-                .optionalStart()
-                .appendPattern(" HHmm")
-                .optionalEnd()
-                .toFormatter();
+        DateTimeFormatter fmt = new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd")
+                .optionalStart().appendPattern(" HHmm").optionalEnd().toFormatter();
 
         try {
             TemporalAccessor ta = fmt.parse(dateTime);
@@ -73,19 +69,15 @@ public class PartialDateTime {
     public static PartialDateTime loadInstance(DataInputStream in) throws IOException {
         PartialDateTime pdt = new PartialDateTime(null, null);
         pdt.precision = Precision.values()[in.readByte()];
-        pdt.dateTime = LocalDateTime.ofEpochSecond(
-                in.readLong(),
-                in.readInt(),
-                ZoneOffset.UTC);
+        pdt.dateTime = LocalDateTime.ofEpochSecond(in.readLong(), in.readInt(), ZoneOffset.UTC);
         return pdt;
     }
 
     @Override
     public String toString() {
         return switch (precision) {
-            case DATE_ONLY -> dateTime.format(DateTimeFormatter.ofPattern("MMM dd, yyyy"));
-            case DATE_TIME -> dateTime.format(DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm"));
-
+        case DATE_ONLY -> dateTime.format(DateTimeFormatter.ofPattern("MMM dd, yyyy"));
+        case DATE_TIME -> dateTime.format(DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm"));
         };
     }
 }

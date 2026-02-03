@@ -8,6 +8,8 @@ import java.util.Map;
 import xyxx.command.CommandDefinition;
 import xyxx.command.ParamDefinition;
 import xyxx.datetime.PartialDateTime;
+import xyxx.parser.ParsedCommand;
+import xyxx.parser.Parser;
 import xyxx.storage.Storage;
 import xyxx.task.DeadlineTask;
 import xyxx.task.EventTask;
@@ -15,33 +17,28 @@ import xyxx.task.Task;
 import xyxx.task.TaskList;
 import xyxx.task.TodoTask;
 import xyxx.ui.Ui;
-import xyxx.parser.ParsedCommand;
-import xyxx.parser.Parser;
 
 public class Xyxx {
     enum TaskAction {
-        MARK,
-        UNMARK,
-        DELETE,
+        MARK, UNMARK, DELETE,
     }
 
-    public static void main(String[] args) {
-        new Xyxx().run();
-    }
-
-    private static final Map<String, CommandDefinition> COMMANDS = Map.of(
-            "list", new CommandDefinition("list", false, List.of()),
-            "todo", new CommandDefinition("todo", true, List.of()),
-            "deadline",
+    private static final Map<String, CommandDefinition> COMMANDS = Map.of("list",
+            new CommandDefinition("list", false, List.of()), "todo",
+            new CommandDefinition("todo", true, List.of()), "deadline",
             new CommandDefinition("deadline", true,
                     List.of(new ParamDefinition("by", true, ParamDefinition.Type.PARTIALDATETIME))),
             "event",
             new CommandDefinition("event", true,
                     List.of(new ParamDefinition("from", true, ParamDefinition.Type.PARTIALDATETIME),
                             new ParamDefinition("to", true, ParamDefinition.Type.PARTIALDATETIME))),
-            "mark", new CommandDefinition("mark", true, List.of()),
-            "unmark", new CommandDefinition("unmark", true, List.of()),
-            "delete", new CommandDefinition("delete", true, List.of()));
+            "mark", new CommandDefinition("mark", true, List.of()), "unmark",
+            new CommandDefinition("unmark", true, List.of()), "delete",
+            new CommandDefinition("delete", true, List.of()));
+
+    public static void main(String[] args) {
+        new Xyxx().run();
+    }
 
     private TaskList tasks;
 
@@ -83,35 +80,35 @@ public class Xyxx {
             ParsedCommand parsed = parser.parse(input);
 
             switch (parsed.commandName()) {
-                case "":
-                    if (parsed.subject().equals(""))
-                        ui.printMessage("Oh, remaining silent aren't we?");
-                    else
-                        ui.printMessage("You said: " + input);
-                    break;
-                case "list":
-                    handleListCommand();
-                    break;
-                case "todo":
-                    handleTodoCommand(parsed.subject());
-                    break;
-                case "deadline":
-                    handleDeadlineCommand(parsed.subject(), parsed.params());
-                    break;
-                case "event":
-                    handleEventCommand(parsed.subject(), parsed.params());
-                    break;
-                case "mark":
-                    handleTaskActionCommand(parsed.subject(), TaskAction.MARK);
-                    break;
-                case "unmark":
-                    handleTaskActionCommand(parsed.subject(), TaskAction.UNMARK);
-                    break;
-                case "delete":
-                    handleTaskActionCommand(parsed.subject(), TaskAction.DELETE);
-                    break;
-                default:
-                    break;
+            case "":
+                if (parsed.subject().equals(""))
+                    ui.printMessage("Oh, remaining silent aren't we?");
+                else
+                    ui.printMessage("You said: " + input);
+                break;
+            case "list":
+                handleListCommand();
+                break;
+            case "todo":
+                handleTodoCommand(parsed.subject());
+                break;
+            case "deadline":
+                handleDeadlineCommand(parsed.subject(), parsed.params());
+                break;
+            case "event":
+                handleEventCommand(parsed.subject(), parsed.params());
+                break;
+            case "mark":
+                handleTaskActionCommand(parsed.subject(), TaskAction.MARK);
+                break;
+            case "unmark":
+                handleTaskActionCommand(parsed.subject(), TaskAction.UNMARK);
+                break;
+            case "delete":
+                handleTaskActionCommand(parsed.subject(), TaskAction.DELETE);
+                break;
+            default:
+                break;
             }
         } catch (ParseException e) {
             ui.printMessage(String.format("Oop! %s", e.getMessage()));
@@ -171,18 +168,19 @@ public class Xyxx {
 
             Task currentTask = tasks.get(taskNumber - 1);
             switch (action) {
-                case MARK:
-                    currentTask.markAsDone();
-                    ui.printMessage(String.format("Alright, I have it marked!\n     %s", currentTask));
-                    break;
-                case UNMARK:
-                    currentTask.unmarkAsDone();
-                    ui.printMessage(String.format("Alright, I have it unmarked!\n     %s", currentTask));
-                    break;
-                case DELETE:
-                    tasks.remove(taskNumber - 1);
-                    ui.printMessage(String.format("Alright, I have it deleted!\n     %s", currentTask));
-                    break;
+            case MARK:
+                currentTask.markAsDone();
+                ui.printMessage(String.format("Alright, I have it marked!\n     %s", currentTask));
+                break;
+            case UNMARK:
+                currentTask.unmarkAsDone();
+                ui.printMessage(
+                        String.format("Alright, I have it unmarked!\n     %s", currentTask));
+                break;
+            case DELETE:
+                tasks.remove(taskNumber - 1);
+                ui.printMessage(String.format("Alright, I have it deleted!\n     %s", currentTask));
+                break;
             }
         } catch (NumberFormatException e) {
             ui.printMessage(CommandFailureMessage.invalidTaskNumber(subject));

@@ -36,10 +36,10 @@ public final class TaskList {
         int taskType;
         while ((taskType = in.read()) != -1) {
             Task task = switch (taskType) {
-                case 1 -> TodoTask.loadInstance(in);
-                case 2 -> EventTask.loadInstance(in);
-                case 3 -> DeadlineTask.loadInstance(in);
-                default -> null;
+            case 1 -> TodoTask.loadInstance(in);
+            case 2 -> EventTask.loadInstance(in);
+            case 3 -> DeadlineTask.loadInstance(in);
+            default -> null;
             };
 
             if (task != null) {
