@@ -1,4 +1,4 @@
-package ui;
+package xyxx.ui;
 
 public record UiSettings(int messageWidth, int indent) {
     static class Builder {

@@ -1,9 +1,10 @@
-package task;
+package xyxx.task;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import datetime.PartialDateTime;
+
+import xyxx.datetime.PartialDateTime;
 
 public class DeadlineTask extends Task {
     public static DeadlineTask loadInstance(DataInputStream in) throws IOException {
