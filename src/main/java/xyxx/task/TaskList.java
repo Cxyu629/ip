@@ -5,33 +5,62 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * A container for {@link Task} instances with convenience methods for
+ * serialization and common list operations.
+ */
 public final class TaskList {
     ArrayList<Task> tasks = new ArrayList<>();
 
+    /**
+     * Creates an empty task list.
+     */
     public TaskList() {
         tasks = new ArrayList<>();
     }
 
+    /**
+     * Returns the task at the given (zero-based) index.
+     */
     public Task get(int index) {
         return tasks.get(index);
     }
 
+    /**
+     * Checks whether the provided index is valid for this list.
+     */
     public boolean containsIndex(int index) {
         return index >= 0 && index < tasks.size();
     }
 
+    /**
+     * Adds a task to the end of the list.
+     */
     public void add(Task task) {
         tasks.add(task);
     }
 
+    /**
+     * Removes the task at the specified index.
+     */
     public void remove(int index) {
         tasks.remove(index);
     }
 
+    /**
+     * Returns the number of tasks in this list.
+     */
     public int size() {
         return tasks.size();
     }
 
+    /**
+     * Loads tasks from the input stream until EOF. The stream is expected to
+     * contain a task type byte followed by the task's serialized form.
+     *
+     * @param in the input stream to read from
+     * @throws IOException if an I/O error occurs
+     */
     void load(DataInputStream in) throws IOException {
         int taskType;
         while ((taskType = in.read()) != -1) {
@@ -48,12 +77,19 @@ public final class TaskList {
         }
     }
 
+    /**
+     * Loads a {@link TaskList} from the input stream.
+     */
     public static TaskList loadInstance(DataInputStream in) throws IOException {
         TaskList taskList = new TaskList();
         taskList.load(in);
         return taskList;
     }
 
+    /**
+     * Saves all tasks to the provided output stream using a simple type
+     * byte followed by each task's serialized form.
+     */
     public void save(DataOutputStream out) throws IOException {
         for (Task task : tasks) {
             if (task instanceof TodoTask) {
@@ -70,6 +106,9 @@ public final class TaskList {
         }
     }
 
+    /**
+     * Returns a numbered list representation of tasks.
+     */
     @Override
     public String toString() {
         StringBuilder message = new StringBuilder();

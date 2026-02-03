@@ -13,6 +13,10 @@ import xyxx.command.CommandDefinition;
 import xyxx.command.ParamDefinition;
 import xyxx.datetime.PartialDateTime;
 
+/**
+ * Parses CLI-like commands into a {@link ParsedCommand} using a registry of
+ * {@link CommandDefinition} objects.
+ */
 public final class Parser {
 
     private final record ChunkToken(String chunk, int position) {
@@ -20,10 +24,25 @@ public final class Parser {
 
     private final Map<String, CommandDefinition> registry;
 
+    /**
+     * Creates a Parser backed by the provided command registry.
+     *
+     * @param registry mapping of command names to definitions
+     */
     public Parser(Map<String, CommandDefinition> registry) {
         this.registry = registry;
     }
 
+    /**
+     * Parses the raw command line input into a {@link ParsedCommand}.
+     *
+     * @param input the raw command line input
+     * @return a parsed command; if the command is unknown the returned
+     *         {@link ParsedCommand} will have an empty {@code commandName} and
+     *         {@code null} {@code params}
+     * @throws ParseException on malformed input, missing required parameters,
+     *                        unexpected parameters, or invalid parameter values
+     */
     public ParsedCommand parse(String input) throws ParseException {
         List<ChunkToken> chunks = tokenize(input);
 
