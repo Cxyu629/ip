@@ -1,18 +1,19 @@
 package xyxx.task;
 
-import org.junit.jupiter.api.Test;
-import xyxx.datetime.PartialDateTime;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.IOException;
-import java.io.ByteArrayOutputStream;
 import java.io.ByteArrayInputStream;
-import java.io.DataOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
+
+import xyxx.datetime.PartialDateTime;
 
 public class TaskListTest {
 
@@ -70,7 +71,8 @@ public class TaskListTest {
     @Test
     public void findWithDatetimeTaskTest() {
         TaskList list = new TaskList();
-        list.add(new DeadlineTask("Submit report", PartialDateTime.createDateTime(LocalDateTime.of(2022, 6, 1, 12, 0))));
+        list.add(
+            new DeadlineTask("Submit report", PartialDateTime.createDateTime(LocalDateTime.of(2022, 6, 1, 12, 0))));
         list.add(new TodoTask("Submit tax"));
 
         TaskList found = list.filterByKeyword("submit");
