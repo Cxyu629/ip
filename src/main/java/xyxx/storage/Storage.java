@@ -41,8 +41,9 @@ public final class Storage {
      * @throws IOException if an I/O error occurs
      */
     public static TaskList load() throws IOException {
-        if (!FILE.exists())
+        if (!FILE.exists()) {
             return new TaskList();
+        }
 
         try (DataInputStream in = new DataInputStream(new FileInputStream(FILE))) {
             return TaskList.loadInstance(in);

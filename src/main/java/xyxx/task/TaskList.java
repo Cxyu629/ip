@@ -10,6 +10,15 @@ import java.util.ArrayList;
  * operations.
  */
 public final class TaskList {
+    private ArrayList<Task> tasks = new ArrayList<>();
+
+    /**
+     * Creates an empty task list.
+     */
+    public TaskList() {
+        tasks = new ArrayList<>();
+    }
+
     /**
      * Loads a {@link TaskList} from the input stream.
      */
@@ -17,15 +26,6 @@ public final class TaskList {
         TaskList taskList = new TaskList();
         taskList.load(in);
         return taskList;
-    }
-
-    ArrayList<Task> tasks = new ArrayList<>();
-
-    /**
-     * Creates an empty task list.
-     */
-    public TaskList() {
-        tasks = new ArrayList<>();
     }
 
     /**

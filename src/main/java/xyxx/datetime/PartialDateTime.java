@@ -41,6 +41,27 @@ public class PartialDateTime {
     public static final String FORMAT_HINT = "yyyy-mm-dd [HHmm]";
 
     /**
+     * The underlying date and time value. If {@link #precision} is DATE_ONLY, the time is 00:00.
+     */
+    private LocalDateTime dateTime;
+
+    /**
+     * The precision of this instance (date only or date-time).
+     */
+    private Precision precision;
+
+    /**
+     * Constructs a PartialDateTime with the given value and precision.
+     *
+     * @param dateTime the date and time value
+     * @param precision the precision (date only or date-time)
+     */
+    private PartialDateTime(LocalDateTime dateTime, Precision precision) {
+        this.dateTime = dateTime;
+        this.precision = precision;
+    }
+
+    /**
      * Creates a {@link PartialDateTime} instance with date precision only (no time component).
      *
      * @param date the date to use
@@ -98,27 +119,6 @@ public class PartialDateTime {
         pdt.precision = Precision.values()[in.readByte()];
         pdt.dateTime = LocalDateTime.ofEpochSecond(in.readLong(), in.readInt(), ZoneOffset.UTC);
         return pdt;
-    }
-
-    /**
-     * The underlying date and time value. If {@link #precision} is DATE_ONLY, the time is 00:00.
-     */
-    private LocalDateTime dateTime;
-
-    /**
-     * The precision of this instance (date only or date-time).
-     */
-    private Precision precision;
-
-    /**
-     * Constructs a PartialDateTime with the given value and precision.
-     *
-     * @param dateTime the date and time value
-     * @param precision the precision (date only or date-time)
-     */
-    private PartialDateTime(LocalDateTime dateTime, Precision precision) {
-        this.dateTime = dateTime;
-        this.precision = precision;
     }
 
     /**

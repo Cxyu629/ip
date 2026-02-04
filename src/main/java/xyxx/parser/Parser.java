@@ -134,6 +134,8 @@ public final class Parser {
                         position);
             }
             break;
+        default:
+            throw new UnsupportedOperationException("Unsupported parameter type: " + paramDef.type());
         }
     }
 }

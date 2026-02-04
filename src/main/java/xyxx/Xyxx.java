@@ -41,18 +41,18 @@ public class Xyxx {
             new CommandDefinition("delete", true, List.of()), "find",
             new CommandDefinition("find", true, List.of()));
 
+    private TaskList tasks;
+
+    private Ui ui = new Ui();
+
+    private Parser parser = new Parser(COMMANDS);
+
     /**
      * Application entry point.
      */
     public static void main(String[] args) {
         new Xyxx().run();
     }
-
-    private TaskList tasks;
-
-    private Ui ui = new Ui();
-
-    private Parser parser = new Parser(COMMANDS);
 
     /**
      * Runs the main read-eval-print loop: greets the user, reads input until "bye" is entered,
@@ -71,8 +71,9 @@ public class Xyxx {
         while (true) {
             String input = ui.getInput();
 
-            if (input.toLowerCase().equals("bye"))
+            if (input.toLowerCase().equals("bye")) {
                 break;
+            }
 
             processInput(input);
         }
@@ -93,10 +94,11 @@ public class Xyxx {
 
             switch (parsed.commandName()) {
             case "":
-                if (parsed.subject().equals(""))
+                if (parsed.subject().equals("")) {
                     ui.printMessage("Oh, remaining silent aren't we?");
-                else
+                } else {
                     ui.printMessage("You said: " + input);
+                }
                 break;
             case "list":
                 handleListCommand();
@@ -196,6 +198,8 @@ public class Xyxx {
                 tasks.remove(taskNumber - 1);
                 ui.printMessage(String.format("Alright, I have it deleted!\n     %s", currentTask));
                 break;
+            default:
+                throw new UnsupportedOperationException("Unsupported task action: " + action);
             }
         } catch (NumberFormatException e) {
             ui.printMessage(CommandFailureMessage.invalidTaskNumber(subject));
