@@ -43,9 +43,4 @@ public record UiSettings(int messageWidth, int indent) {
     public static Builder builder() {
         return new Builder();
     }
-
-    public UiSettings(int messageWidth, int indent) {
-        this.messageWidth = messageWidth;
-        this.indent = indent;
-    }
 }

@@ -10,6 +10,19 @@ import xyxx.datetime.PartialDateTime;
  * A task that has a deadline (a {@link PartialDateTime} value).
  */
 public class DeadlineTask extends Task {
+    protected PartialDateTime by;
+
+    /**
+     * Constructs a new deadline task.
+     *
+     * @param description the description
+     * @param by the deadline
+     */
+    public DeadlineTask(String description, PartialDateTime by) {
+        super(description);
+        this.by = by;
+    }
+
     /**
      * Loads a {@link DeadlineTask} from the input stream.
      *
@@ -21,19 +34,6 @@ public class DeadlineTask extends Task {
         DeadlineTask task = new DeadlineTask(null, null);
         task.load(in);
         return task;
-    }
-
-    protected PartialDateTime by;
-
-    /**
-     * Constructs a new deadline task.
-     *
-     * @param description the description
-     * @param by          the deadline
-     */
-    public DeadlineTask(String description, PartialDateTime by) {
-        super(description);
-        this.by = by;
     }
 
     /**
