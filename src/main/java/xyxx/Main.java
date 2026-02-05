@@ -25,7 +25,7 @@ public class Main extends Application {
             primaryStage.setTitle("Xyxx");
 
             xyxx.init();
-            
+
             fxmlLoader.<MainWindow>getController().setXyxx(xyxx);
             primaryStage.show();
 
