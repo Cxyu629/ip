@@ -8,7 +8,9 @@ import java.io.IOException;
  * Represents a generic task with a description and a completion flag.
  */
 public class Task {
+    /** The description of this task. */
     protected String description;
+    /** Whether this task is completed. */
     protected boolean isDone;
 
     /**
@@ -37,10 +39,16 @@ public class Task {
         return "[" + (isDone ? "X" : " ") + "] " + description;
     }
 
+    /**
+     * Marks this task as done.
+     */
     public void markAsDone() {
         this.isDone = true;
     }
 
+    /**
+     * Marks this task as not done.
+     */
     public void unmarkAsDone() {
         this.isDone = false;
     }

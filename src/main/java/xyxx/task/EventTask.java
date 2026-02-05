@@ -10,8 +10,10 @@ import xyxx.datetime.PartialDateTime;
  * A task representing an event with a start and end {@link PartialDateTime}.
  */
 public class EventTask extends Task {
+    /** The start time of this event. */
     protected PartialDateTime from;
 
+    /** The end time of this event. */
     protected PartialDateTime to;
 
     /**
@@ -29,6 +31,10 @@ public class EventTask extends Task {
 
     /**
      * Loads an EventTask from the input stream.
+     * 
+     * @param in the input stream
+     * @return the loaded EventTask
+     * @throws IOException if an I/O error occurs
      */
     public static EventTask loadInstance(DataInputStream in) throws IOException {
         EventTask task = new EventTask(null, null, null);

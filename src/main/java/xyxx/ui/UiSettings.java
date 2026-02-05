@@ -40,6 +40,11 @@ public record UiSettings(int messageWidth, int indent) {
         }
     }
 
+    /**
+     * Creates a new {@link Builder} for {@link UiSettings}.
+     * 
+     * @return the builder instance
+     */
     public static Builder builder() {
         return new Builder();
     }
