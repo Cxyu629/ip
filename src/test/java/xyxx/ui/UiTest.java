@@ -1,28 +1,31 @@
 package xyxx.ui;
 
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
+
+import xyxx.cli.ui.CliUi;
+import xyxx.cli.ui.UiSettings;
 
 public class UiTest {
 
     @Test
-    public void printMessageTest() {
+    public void sendMessageTest() {
         UiSettings s = UiSettings.builder().setMessageWidth(3).setIndent(2).build();
-        Ui ui = new Ui(s);
+        CliUi ui = new CliUi(s);
 
         PrintStream originalOut = System.out;
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             System.setOut(new PrintStream(baos));
 
-            ui.printMessage("hello");
+            ui.sendMessage("hello");
 
             String out = baos.toString();
             assertTrue(out.contains("hello"));
@@ -33,15 +36,15 @@ public class UiTest {
     }
 
     @Test
-    public void printGreetMessageTest() {
-        Ui ui = new Ui();
+    public void sendGreetMessageTest() {
+        CliUi ui = new CliUi();
 
         PrintStream originalOut = System.out;
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             System.setOut(new PrintStream(baos));
 
-            ui.printGreetMessage();
+            ui.sendGreetMessage();
 
             String out = baos.toString();
             assertTrue(out.contains("Hello from"));
@@ -52,15 +55,15 @@ public class UiTest {
     }
 
     @Test
-    public void printExitMessageTest() {
-        Ui ui = new Ui();
+    public void sendExitMessageTest() {
+        CliUi ui = new CliUi();
 
         PrintStream originalOut = System.out;
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             System.setOut(new PrintStream(baos));
 
-            ui.printExitMessage();
+            ui.sendExitMessage();
 
             String out = baos.toString();
             assertTrue(out.contains("See you soon, bye!"));
@@ -81,8 +84,8 @@ public class UiTest {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             System.setOut(new PrintStream(baos));
 
-            Ui ui = new Ui(); // scanner is created at construction and binds to System.in
-            String line = ui.getInput();
+            CliUi ui = new CliUi(); // scanner is created at construction and binds to System.in
+            String line = ui.receiveInput();
 
             assertEquals("user input", line);
             assertTrue(baos.toString().contains("> "));

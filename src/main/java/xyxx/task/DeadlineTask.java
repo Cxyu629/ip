@@ -10,6 +10,7 @@ import xyxx.datetime.PartialDateTime;
  * A task that has a deadline (a {@link PartialDateTime} value).
  */
 public class DeadlineTask extends Task {
+    /** The deadline of this task. */
     protected PartialDateTime by;
 
     /**

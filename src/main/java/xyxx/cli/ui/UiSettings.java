@@ -1,7 +1,7 @@
-package xyxx.ui;
+package xyxx.cli.ui;
 
 /**
- * Settings that control how {@link Ui} formats messages.
+ * Settings that control how {@link CliUi} formats messages.
  *
  * @param messageWidth the width of the top/bottom border
  * @param indent       number of leading spaces for printed messages
@@ -10,7 +10,7 @@ public record UiSettings(int messageWidth, int indent) {
     /**
      * Builder for {@link UiSettings} to allow fluent configuration.
      */
-    static class Builder {
+    public static class Builder {
         private int messageWidth = 70;
         private int indent = 10;
 
@@ -40,6 +40,11 @@ public record UiSettings(int messageWidth, int indent) {
         }
     }
 
+    /**
+     * Creates a new {@link Builder} for {@link UiSettings}.
+     * 
+     * @return the builder instance
+     */
     public static Builder builder() {
         return new Builder();
     }

@@ -1,13 +1,14 @@
-package xyxx.ui;
+package xyxx.cli.ui;
 
 import java.util.Scanner;
 
 /**
- * Responsible for user-facing input/output. The class handles printing
- * messages with formatting and reading a single line of user input.
+ * Responsible for user-facing input/output. The class handles printing messages with formatting and
+ * reading a single line of user input.
  */
-public class Ui {
+public class CliUi {
     private UiSettings settings;
+
     private Scanner scanner = new Scanner(System.in);
 
     /**
@@ -15,14 +16,14 @@ public class Ui {
      *
      * @param settings formatting settings
      */
-    public Ui(UiSettings settings) {
+    public CliUi(UiSettings settings) {
         this.settings = settings;
     }
 
     /**
      * Creates a UI with default settings.
      */
-    public Ui() {
+    public CliUi() {
         this(UiSettings.builder().build());
     }
 
@@ -31,7 +32,7 @@ public class Ui {
      *
      * @param message the message to print
      */
-    public void printMessage(String message) {
+    public void sendMessage(String message) {
         String border = "_".repeat(settings.messageWidth());
         System.out.println(border.indent(settings.indent()));
         System.out.print(message.indent(settings.indent()));
@@ -40,10 +41,8 @@ public class Ui {
 
     /**
      * Prompts and reads a single line from standard input.
-     *
-     * @return the line entered by the user (without a trailing newline)
      */
-    public String getInput() {
+    public String receiveInput() {
         System.out.print("> ");
         return scanner.nextLine();
     }
@@ -51,7 +50,7 @@ public class Ui {
     /**
      * Prints the application greeting (logo + welcome text).
      */
-    public void printGreetMessage() {
+    public void sendGreetMessage() {
         String logo = """
                  \\o       o/
                   v\\     /v
@@ -68,14 +67,14 @@ public class Ui {
                 """;
 
         String message = "Hello from \n \n" + logo + "\nHow may I help you today?";
-        printMessage(message);
+        sendMessage(message);
     }
 
     /**
      * Prints the application's exit message.
      */
-    public void printExitMessage() {
+    public void sendExitMessage() {
         String message = "See you soon, bye!";
-        printMessage(message);
+        sendMessage(message);
     }
 }

@@ -21,6 +21,10 @@ public final class TaskList {
 
     /**
      * Loads a {@link TaskList} from the input stream.
+     * 
+     * @param in the input stream
+     * @return the loaded TaskList
+     * @throws IOException if an I/O error occurs
      */
     public static TaskList loadInstance(DataInputStream in) throws IOException {
         TaskList taskList = new TaskList();
@@ -30,6 +34,9 @@ public final class TaskList {
 
     /**
      * Returns the task at the given (zero-based) index.
+     * 
+     * @param index the index of the task to retrieve
+     * @return the task at the specified index
      */
     public Task get(int index) {
         return tasks.get(index);
@@ -37,6 +44,9 @@ public final class TaskList {
 
     /**
      * Checks whether the provided index is valid for this list.
+     * 
+     * @param index the index to check
+     * @return true if the index is valid, false otherwise
      */
     public boolean containsIndex(int index) {
         return index >= 0 && index < tasks.size();
@@ -44,6 +54,8 @@ public final class TaskList {
 
     /**
      * Adds a task to the end of the list.
+     * 
+     * @param task the task to add
      */
     public void add(Task task) {
         tasks.add(task);
@@ -51,6 +63,8 @@ public final class TaskList {
 
     /**
      * Removes the task at the specified index.
+     * 
+     * @param index the index of the task to remove
      */
     public void remove(int index) {
         tasks.remove(index);
@@ -58,6 +72,8 @@ public final class TaskList {
 
     /**
      * Returns the number of tasks in this list.
+     * 
+     * @return the size of the task list
      */
     public int size() {
         return tasks.size();
@@ -83,6 +99,9 @@ public final class TaskList {
     /**
      * Saves all tasks to the provided output stream using a simple type byte followed by each
      * task's serialized form.
+     * 
+     * @param out the output stream to write to
+     * @throws IOException if an I/O error occurs
      */
     public void save(DataOutputStream out) throws IOException {
         for (Task task : tasks) {
