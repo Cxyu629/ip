@@ -4,7 +4,7 @@ package xyxx;
  * Helper class that centralizes user-facing error messages for command
  * failures.
  */
-public abstract class CommandFailureMessage {
+public final class CommandFailureMessage {
     /**
      * Returns a message for when a non-numeric argument is given where a task
      * number is expected.
@@ -45,5 +45,9 @@ public abstract class CommandFailureMessage {
      */
     public static String invalidFormat(String formatGuide) {
         return String.format("I don't get it... Try formatting it like \"%s\".", formatGuide);
+    }
+
+    public static String parseError(String details) {
+        return String.format("Oops, I couldn't parse that! %s", details);
     }
 }

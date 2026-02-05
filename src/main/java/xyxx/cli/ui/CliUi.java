@@ -1,13 +1,14 @@
-package xyxx.ui;
+package xyxx.cli.ui;
 
 import java.util.Scanner;
 
 /**
- * Responsible for user-facing input/output. The class handles printing
- * messages with formatting and reading a single line of user input.
+ * Responsible for user-facing input/output. The class handles printing messages with formatting and
+ * reading a single line of user input.
  */
-public class CliUi implements UiAdapter {
+public class CliUi {
     private UiSettings settings;
+
     private Scanner scanner = new Scanner(System.in);
 
     /**
@@ -40,8 +41,6 @@ public class CliUi implements UiAdapter {
 
     /**
      * Prompts and reads a single line from standard input.
-     *
-     * @return the line entered by the user (without a trailing newline)
      */
     public String receiveInput() {
         System.out.print("> ");

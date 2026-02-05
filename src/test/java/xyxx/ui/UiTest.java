@@ -10,12 +10,15 @@ import java.io.PrintStream;
 
 import org.junit.jupiter.api.Test;
 
+import xyxx.cli.ui.CliUi;
+import xyxx.cli.ui.UiSettings;
+
 public class UiTest {
 
     @Test
     public void sendMessageTest() {
         UiSettings s = UiSettings.builder().setMessageWidth(3).setIndent(2).build();
-        UiAdapter ui = new CliUi(s);
+        CliUi ui = new CliUi(s);
 
         PrintStream originalOut = System.out;
         try {
@@ -34,7 +37,7 @@ public class UiTest {
 
     @Test
     public void sendGreetMessageTest() {
-        UiAdapter ui = new CliUi();
+        CliUi ui = new CliUi();
 
         PrintStream originalOut = System.out;
         try {
@@ -53,7 +56,7 @@ public class UiTest {
 
     @Test
     public void sendExitMessageTest() {
-        UiAdapter ui = new CliUi();
+        CliUi ui = new CliUi();
 
         PrintStream originalOut = System.out;
         try {
@@ -81,7 +84,7 @@ public class UiTest {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             System.setOut(new PrintStream(baos));
 
-            UiAdapter ui = new CliUi(); // scanner is created at construction and binds to System.in
+            CliUi ui = new CliUi(); // scanner is created at construction and binds to System.in
             String line = ui.receiveInput();
 
             assertEquals("user input", line);

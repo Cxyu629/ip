@@ -1,4 +1,4 @@
-package xyxx.ui;
+package xyxx.cli.ui;
 
 /**
  * Settings that control how {@link CliUi} formats messages.
@@ -10,7 +10,7 @@ public record UiSettings(int messageWidth, int indent) {
     /**
      * Builder for {@link UiSettings} to allow fluent configuration.
      */
-    static class Builder {
+    public static class Builder {
         private int messageWidth = 70;
         private int indent = 10;
 
