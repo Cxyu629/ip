@@ -1,5 +1,7 @@
-package xyxx;
+package xyxx.cli;
 
+import xyxx.Result;
+import xyxx.Xyxx;
 import xyxx.cli.ui.CliUi;
 
 /**

@@ -25,13 +25,17 @@ public class Main extends Application {
             primaryStage.setTitle("Xyxx");
 
             xyxx.init();
-            primaryStage.setOnCloseRequest(event -> xyxx.close());
-
+            
             fxmlLoader.<MainWindow>getController().setXyxx(xyxx);
             primaryStage.show();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void stop() {
+        xyxx.close();
     }
 }
