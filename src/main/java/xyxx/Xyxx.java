@@ -16,7 +16,8 @@ import xyxx.task.EventTask;
 import xyxx.task.Task;
 import xyxx.task.TaskList;
 import xyxx.task.TodoTask;
-import xyxx.ui.Ui;
+import xyxx.ui.CliUi;
+import xyxx.ui.UiAdapter;
 
 /**
  * Main application entry point that wires together the UI, parser and storage components and
@@ -43,7 +44,7 @@ public class Xyxx {
 
     private TaskList tasks;
 
-    private Ui ui = new Ui();
+    private UiAdapter ui = new CliUi();
 
     private Parser parser = new Parser(COMMANDS);
 
@@ -62,14 +63,14 @@ public class Xyxx {
         try {
             tasks = Storage.load();
         } catch (IOException e) {
-            ui.printMessage(String.format("Oh no! %s", e));
+            ui.sendMessage(String.format("Oh no! %s", e));
             return;
         }
 
-        ui.printGreetMessage();
+        ui.sendGreetMessage();
 
         while (true) {
-            String input = ui.getInput();
+            String input = ui.receiveInput();
 
             if (input.toLowerCase().equals("bye")) {
                 break;
@@ -81,11 +82,11 @@ public class Xyxx {
         try {
             Storage.save(tasks);
         } catch (IOException e) {
-            ui.printMessage(String.format("Oh no! %s", e));
+            ui.sendMessage(String.format("Oh no! %s", e));
             return;
         }
 
-        ui.printExitMessage();
+        ui.sendExitMessage();
     }
 
     private void processInput(String input) {
@@ -95,9 +96,9 @@ public class Xyxx {
             switch (parsed.commandName()) {
             case "":
                 if (parsed.subject().equals("")) {
-                    ui.printMessage("Oh, remaining silent aren't we?");
+                    ui.sendMessage("Oh, remaining silent aren't we?");
                 } else {
-                    ui.printMessage("You said: " + input);
+                    ui.sendMessage("You said: " + input);
                 }
                 break;
             case "list":
@@ -128,24 +129,24 @@ public class Xyxx {
                 break;
             }
         } catch (ParseException e) {
-            ui.printMessage(String.format("Oop! %s", e.getMessage()));
+            ui.sendMessage(String.format("Oop! %s", e.getMessage()));
         }
     }
 
     private void handleTodoCommand(String subject) {
         if (subject.equals("")) {
-            ui.printMessage(CommandFailureMessage.emptyTaskDescription());
+            ui.sendMessage(CommandFailureMessage.emptyTaskDescription());
             return;
         }
 
         TodoTask todo = new TodoTask(subject);
         tasks.add(todo);
-        ui.printMessage("Added todo: " + todo);
+        ui.sendMessage("Added todo: " + todo);
     }
 
     private void handleDeadlineCommand(String subject, Map<String, String> params) {
         if (subject.equals("")) {
-            ui.printMessage(CommandFailureMessage.emptyTaskDescription());
+            ui.sendMessage(CommandFailureMessage.emptyTaskDescription());
             return;
         }
 
@@ -155,12 +156,12 @@ public class Xyxx {
 
         DeadlineTask deadline = new DeadlineTask(description, by);
         tasks.add(deadline);
-        ui.printMessage("Added deadline: " + deadline);
+        ui.sendMessage("Added deadline: " + deadline);
     }
 
     private void handleEventCommand(String subject, Map<String, String> params) {
         if (subject.equals("")) {
-            ui.printMessage(CommandFailureMessage.emptyTaskDescription());
+            ui.sendMessage(CommandFailureMessage.emptyTaskDescription());
             return;
         }
 
@@ -172,14 +173,14 @@ public class Xyxx {
 
         EventTask event = new EventTask(description, from, to);
         tasks.add(event);
-        ui.printMessage("Added event: " + event);
+        ui.sendMessage("Added event: " + event);
     }
 
     private void handleTaskActionCommand(String subject, TaskAction action) {
         try {
             int taskNumber = Integer.parseInt(subject);
             if (taskNumber < 1 || taskNumber > tasks.size()) {
-                ui.printMessage(CommandFailureMessage.taskIndexOutOfRange(taskNumber));
+                ui.sendMessage(CommandFailureMessage.taskIndexOutOfRange(taskNumber));
                 return;
             }
 
@@ -187,48 +188,48 @@ public class Xyxx {
             switch (action) {
             case MARK:
                 currentTask.markAsDone();
-                ui.printMessage(String.format("Alright, I have it marked!\n     %s", currentTask));
+                ui.sendMessage(String.format("Alright, I have it marked!\n     %s", currentTask));
                 break;
             case UNMARK:
                 currentTask.unmarkAsDone();
-                ui.printMessage(
+                ui.sendMessage(
                         String.format("Alright, I have it unmarked!\n     %s", currentTask));
                 break;
             case DELETE:
                 tasks.remove(taskNumber - 1);
-                ui.printMessage(String.format("Alright, I have it deleted!\n     %s", currentTask));
+                ui.sendMessage(String.format("Alright, I have it deleted!\n     %s", currentTask));
                 break;
             default:
                 throw new UnsupportedOperationException("Unsupported task action: " + action);
             }
         } catch (NumberFormatException e) {
-            ui.printMessage(CommandFailureMessage.invalidTaskNumber(subject));
+            ui.sendMessage(CommandFailureMessage.invalidTaskNumber(subject));
         }
     }
 
     private void handleFindCommand(String subject) {
         if (subject.isBlank()) {
-            ui.printMessage(CommandFailureMessage.invalidFormat("find <query>"));
+            ui.sendMessage(CommandFailureMessage.invalidFormat("find <query>"));
             return;
         }
 
         TaskList found = tasks.filterByKeyword(subject.strip());
 
         if (found.size() == 0) {
-            ui.printMessage(String.format("No tasks found matching \"%s\"", subject));
+            ui.sendMessage(String.format("No tasks found matching \"%s\"", subject));
             return;
         }
 
-        ui.printMessage("Found tasks:\n" + found.toString());
+        ui.sendMessage("Found tasks:\n" + found.toString());
     }
 
     private void handleListCommand() {
         if (tasks.size() == 0) {
-            ui.printMessage("There's nothing here -_-");
+            ui.sendMessage("There's nothing here -_-");
             return;
         }
 
         String message = "Let's do this!\n";
-        ui.printMessage(message + tasks.toString());
+        ui.sendMessage(message + tasks.toString());
     }
 }

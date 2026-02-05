@@ -1,7 +1,7 @@
 package xyxx.ui;
 
 /**
- * Settings that control how {@link Ui} formats messages.
+ * Settings that control how {@link CliUi} formats messages.
  *
  * @param messageWidth the width of the top/bottom border
  * @param indent       number of leading spaces for printed messages
