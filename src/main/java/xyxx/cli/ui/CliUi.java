@@ -41,6 +41,8 @@ public class CliUi {
 
     /**
      * Prompts and reads a single line from standard input.
+     * 
+     * @return the user input line
      */
     public String receiveInput() {
         System.out.print("> ");

@@ -18,6 +18,9 @@ public record UiSettings(int messageWidth, int indent) {
 
         /**
          * Sets the width used for border lines.
+         * 
+         * @param messageWidth the message width
+         * @return the builder instance
          */
         public Builder setMessageWidth(int messageWidth) {
             this.messageWidth = messageWidth;
@@ -26,6 +29,9 @@ public record UiSettings(int messageWidth, int indent) {
 
         /**
          * Sets the indent (number of spaces before each message line).
+         * 
+         * @param indent the indent size
+         * @return the builder instance
          */
         public Builder setIndent(int indent) {
             this.indent = indent;
@@ -34,6 +40,8 @@ public record UiSettings(int messageWidth, int indent) {
 
         /**
          * Builds the {@link UiSettings} instance.
+         * 
+         * @return the UiSettings instance
          */
         public UiSettings build() {
             return new UiSettings(this.messageWidth, this.indent);

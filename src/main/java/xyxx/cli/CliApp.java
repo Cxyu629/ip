@@ -21,6 +21,10 @@ public class CliApp {
         xyxx.init();
     }
 
+    /**
+     * Main method to start the CLI application.
+     * @param args command line arguments
+     */
     public static void main(String[] args) {
         new CliApp().run();
     }
