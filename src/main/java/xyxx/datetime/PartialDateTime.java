@@ -147,7 +147,6 @@ public class PartialDateTime {
         return switch (precision) {
         case DATE_ONLY -> dateTime.format(DateTimeFormatter.ofPattern("MMM dd, yyyy"));
         case DATE_TIME -> dateTime.format(DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm"));
-
         };
     }
 }

@@ -28,6 +28,7 @@ public final class Storage {
         if (!FILE.exists()) {
             FILE.createNewFile();
         }
+        
         try (DataOutputStream out = new DataOutputStream(new FileOutputStream(FILE))) {
             tasks.save(out);
         }

@@ -18,7 +18,6 @@ import xyxx.datetime.PartialDateTime;
  * {@link CommandDefinition} objects.
  */
 public final class Parser {
-
     private final record ChunkToken(String chunk, int position) {
     }
 
@@ -37,11 +36,10 @@ public final class Parser {
      * Parses the raw command line input into a {@link ParsedCommand}.
      *
      * @param input the raw command line input
-     * @return a parsed command; if the command is unknown the returned
-     *         {@link ParsedCommand} will have an empty {@code commandName} and
-     *         {@code null} {@code params}
-     * @throws ParseException on malformed input, missing required parameters,
-     *                        unexpected parameters, or invalid parameter values
+     * @return a parsed command; if the command is unknown the returned {@link ParsedCommand} will
+     *         have an empty {@code commandName} and {@code null} {@code params}
+     * @throws ParseException on malformed input, missing required parameters, unexpected
+     *         parameters, or invalid parameter values
      */
     public ParsedCommand parse(String input) throws ParseException {
         List<ChunkToken> chunks = tokenize(input);
@@ -81,19 +79,20 @@ public final class Parser {
         for (ChunkToken chunkToken : paramChunks) {
             String chunk = chunkToken.chunk();
             Matcher matcher = paramPattern.matcher(chunk);
-            if (matcher.matches()) {
-                String key = matcher.group(1);
-                String value = matcher.group(3) != null ? matcher.group(3).trim() : "";
-                Optional<ParamDefinition> paramDef = findParamDef(definition, key);
-                if (paramDef.isEmpty()) {
-                    throw new ParseException("Unexpected parameter: " + key, chunkToken.position());
-                }
-                validateParam(paramDef.get(), value, chunkToken.position());
-                params.put(key, value);
-            } else {
+
+            if (!matcher.matches()) {
                 throw new ParseException("Invalid parameter format: " + chunk,
                         chunkToken.position());
             }
+
+            String key = matcher.group(1);
+            String value = matcher.group(3) != null ? matcher.group(3).trim() : "";
+            Optional<ParamDefinition> paramDef = findParamDef(definition, key);
+            if (paramDef.isEmpty()) {
+                throw new ParseException("Unexpected parameter: " + key, chunkToken.position());
+            }
+            validateParam(paramDef.get(), value, chunkToken.position());
+            params.put(key, value);
         }
 
         for (ParamDefinition param : definition.params()) {
@@ -135,7 +134,8 @@ public final class Parser {
             }
             break;
         default:
-            throw new UnsupportedOperationException("Unsupported parameter type: " + paramDef.type());
+            throw new UnsupportedOperationException(
+                    "Unsupported parameter type: " + paramDef.type());
         }
     }
 }
