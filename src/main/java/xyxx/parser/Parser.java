@@ -30,6 +30,7 @@ public final class Parser {
      */
     public Parser(Map<String, CommandDefinition> registry) {
         this.registry = registry;
+        assert this.registry != null : "Registry must not be null.";
     }
 
     /**
@@ -134,6 +135,7 @@ public final class Parser {
             }
             break;
         default:
+            assert false : "Unhandled ParamType: " + paramDef.type();
             throw new UnsupportedOperationException(
                     "Unsupported parameter type: " + paramDef.type());
         }

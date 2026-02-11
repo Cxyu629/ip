@@ -147,6 +147,10 @@ public class PartialDateTime {
         return switch (precision) {
         case DATE_ONLY -> dateTime.format(DateTimeFormatter.ofPattern("MMM dd, yyyy"));
         case DATE_TIME -> dateTime.format(DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm"));
+        default -> {
+            assert false : "Unhandled Precision: " + precision;
+            throw new UnsupportedOperationException("Unsupported precision: " + precision);
+        }
         };
     }
 }
