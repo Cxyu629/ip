@@ -173,6 +173,7 @@ public class Xyxx {
                 return new Result(true,
                         String.format("Alright, I have it deleted!\n     %s", currentTask), false);
             default:
+                assert false : "Unhandled TaskAction: " + action;
                 throw new UnsupportedOperationException("Unsupported task action: " + action);
             }
         } catch (NumberFormatException e) {
