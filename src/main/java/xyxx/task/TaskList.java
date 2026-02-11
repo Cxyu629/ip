@@ -10,6 +10,10 @@ import java.util.ArrayList;
  * operations.
  */
 public final class TaskList {
+    private static enum TaskType {
+        TODO, EVENT, DEADLINE
+    }
+
     private ArrayList<Task> tasks = new ArrayList<>();
 
     /**
@@ -106,11 +110,11 @@ public final class TaskList {
     public void save(DataOutputStream out) throws IOException {
         for (Task task : tasks) {
             if (task instanceof TodoTask) {
-                out.write(1);
+                out.write(TaskType.TODO.ordinal());
             } else if (task instanceof EventTask) {
-                out.write(2);
+                out.write(TaskType.EVENT.ordinal());
             } else if (task instanceof DeadlineTask) {
-                out.write(3);
+                out.write(TaskType.DEADLINE.ordinal());
             } else {
                 throw new UnsupportedOperationException(
                         String.format("Task type %s not supported.", task.getClass()));
@@ -139,12 +143,13 @@ public final class TaskList {
      * @throws IOException if an I/O error occurs
      */
     void load(DataInputStream in) throws IOException {
-        int taskType;
-        while ((taskType = in.read()) != -1) {
+        int taskTypeOrdinal;
+        while ((taskTypeOrdinal = in.read()) != -1) {
+            TaskType taskType = TaskType.values()[taskTypeOrdinal];
             Task task = switch (taskType) {
-            case 1 -> TodoTask.loadInstance(in);
-            case 2 -> EventTask.loadInstance(in);
-            case 3 -> DeadlineTask.loadInstance(in);
+            case TODO -> TodoTask.loadInstance(in);
+            case EVENT -> EventTask.loadInstance(in);
+            case DEADLINE -> DeadlineTask.loadInstance(in);
             default -> null;
             };
 

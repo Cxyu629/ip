@@ -35,11 +35,19 @@ public class MainWindow extends AnchorPane {
     private Image userImage = new Image(this.getClass().getResourceAsStream("/images/DaUser.png"));
     private Image xyxxImage = new Image(this.getClass().getResourceAsStream("/images/DaDude.png"));
 
+    /**
+     * Initializes the main window controller.
+     */
     @FXML
     public void initialize() {
         scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
     }
 
+    /**
+     * Sets the Xyxx instance for handling user input.
+     *
+     * @param xyxx the Xyxx instance
+     */
     public void setXyxx(Xyxx xyxx) {
         this.xyxx = xyxx;
     }

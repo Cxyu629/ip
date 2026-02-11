@@ -47,6 +47,12 @@ public final class CommandFailureMessage {
         return String.format("I don't get it... Try formatting it like \"%s\".", formatGuide);
     }
 
+    /**
+     * Returns a message indicating a parsing error with details.
+     * 
+     * @param details Additional details about the parsing error.
+     * @return The message indicating a parsing error.
+     */
     public static String parseError(String details) {
         return String.format("Oops, I couldn't parse that! %s", details);
     }
