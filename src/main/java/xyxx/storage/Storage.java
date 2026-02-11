@@ -10,8 +10,7 @@ import java.io.IOException;
 import xyxx.task.TaskList;
 
 /**
- * Simple file-based storage for tasks. Uses a single file ("tasks.dat") in the
- * working directory.
+ * Simple file-based storage for tasks. Uses a single file ("tasks.dat") in the working directory.
  */
 public final class Storage {
     private static final String TASKS_DIR = "tasks.dat";
@@ -28,15 +27,14 @@ public final class Storage {
         if (!FILE.exists()) {
             FILE.createNewFile();
         }
-        
+
         try (DataOutputStream out = new DataOutputStream(new FileOutputStream(FILE))) {
             tasks.save(out);
         }
     }
 
     /**
-     * Loads tasks from disk. Returns an empty {@link TaskList} if no file
-     * exists.
+     * Loads tasks from disk. Returns an empty {@link TaskList} if no file exists.
      *
      * @return the loaded TaskList
      * @throws IOException if an I/O error occurs
