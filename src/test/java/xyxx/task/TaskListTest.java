@@ -10,6 +10,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -22,8 +23,9 @@ public class TaskListTest {
         TaskList list = new TaskList();
         assertEquals(0, list.size());
 
-        list.add(new TodoTask("a"));
-        list.add(new DeadlineTask("b", PartialDateTime.createDate(LocalDate.of(2020, 1, 1))));
+        list.add(new TodoTask("a", List.of()));
+        list.add(new DeadlineTask("b", PartialDateTime.createDate(LocalDate.of(2020, 1, 1)),
+                List.of()));
         assertEquals(2, list.size());
         assertTrue(list.containsIndex(1));
 
@@ -34,8 +36,9 @@ public class TaskListTest {
     @Test
     public void saveLoadRoundTripTest() throws IOException {
         TaskList original = new TaskList();
-        original.add(new TodoTask("todo"));
-        original.add(new DeadlineTask("due", PartialDateTime.createDateTime(LocalDateTime.of(2020, 6, 7, 8, 9))));
+        original.add(new TodoTask("todo", List.of()));
+        original.add(new DeadlineTask("due",
+                PartialDateTime.createDateTime(LocalDateTime.of(2020, 6, 7, 8, 9)), List.of()));
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(baos);
@@ -50,8 +53,8 @@ public class TaskListTest {
     @Test
     public void findBySubstringTest() {
         TaskList list = new TaskList();
-        list.add(new TodoTask("Buy milk"));
-        list.add(new TodoTask("Read book"));
+        list.add(new TodoTask("Buy milk", List.of()));
+        list.add(new TodoTask("Read book", List.of()));
 
         TaskList found = list.filterByKeyword("buy");
         assertEquals(1, found.size());
@@ -61,8 +64,8 @@ public class TaskListTest {
     @Test
     public void findCaseInsensitiveTest() {
         TaskList list = new TaskList();
-        list.add(new TodoTask("Buy milk"));
-        list.add(new TodoTask("buy cookies"));
+        list.add(new TodoTask("Buy milk", List.of()));
+        list.add(new TodoTask("buy cookies", List.of()));
 
         TaskList found = list.filterByKeyword("BUY");
         assertEquals(2, found.size());
@@ -71,9 +74,9 @@ public class TaskListTest {
     @Test
     public void findWithDatetimeTaskTest() {
         TaskList list = new TaskList();
-        list.add(
-            new DeadlineTask("Submit report", PartialDateTime.createDateTime(LocalDateTime.of(2022, 6, 1, 12, 0))));
-        list.add(new TodoTask("Submit tax"));
+        list.add(new DeadlineTask("Submit report",
+                PartialDateTime.createDateTime(LocalDateTime.of(2022, 6, 1, 12, 0)), List.of()));
+        list.add(new TodoTask("Submit tax", List.of()));
 
         TaskList found = list.filterByKeyword("submit");
         assertEquals(2, found.size());
@@ -82,7 +85,7 @@ public class TaskListTest {
     @Test
     public void noMatchReturnsEmptyTest() {
         TaskList list = new TaskList();
-        list.add(new TodoTask("Alpha"));
+        list.add(new TodoTask("Alpha", List.of()));
         TaskList found = list.filterByKeyword("beta");
         assertEquals(0, found.size());
     }

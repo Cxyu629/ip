@@ -138,7 +138,6 @@ public final class TaskList {
     /**
      * Loads tasks from the input stream until EOF. The stream is expected to contain a task type
      * byte followed by the task's serialized form.
-     *
      * @param in the input stream to read from
      * @throws IOException if an I/O error occurs
      */

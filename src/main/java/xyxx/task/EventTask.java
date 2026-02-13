@@ -3,7 +3,10 @@ package xyxx.task;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
 
+import xyxx.contact.Contact;
 import xyxx.datetime.PartialDateTime;
 
 /**
@@ -23,8 +26,8 @@ public class EventTask extends Task {
      * @param from        the start time
      * @param to          the end time
      */
-    public EventTask(String description, PartialDateTime from, PartialDateTime to) {
-        super(description);
+    public EventTask(String description, PartialDateTime from, PartialDateTime to, Collection<Contact> contacts) {
+        super(description, contacts);
         this.from = from;
         this.to = to;
     }
@@ -37,7 +40,7 @@ public class EventTask extends Task {
      * @throws IOException if an I/O error occurs
      */
     public static EventTask loadInstance(DataInputStream in) throws IOException {
-        EventTask task = new EventTask(null, null, null);
+        EventTask task = new EventTask(null, null, null, List.of());
         task.load(in);
         return task;
     }

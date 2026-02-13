@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +15,7 @@ public class TaskTest {
 
     @Test
     public void markUnmarkTest() {
-        Task t = new Task("example");
+        Task t = new Task("example", List.of());
         assertEquals("[ ] example", t.toString());
         t.markAsDone();
         assertEquals("[X] example", t.toString());
@@ -24,14 +25,14 @@ public class TaskTest {
 
     @Test
     public void saveLoadRoundTripTest() throws IOException {
-        Task original = new Task("saved", true);
+        Task original = new Task("saved", true, List.of());
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(baos);
         original.save(out);
 
         DataInputStream in = new DataInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        Task loaded = new Task(null);
+        Task loaded = new Task(null, false, List.of());
         loaded.load(in);
 
         assertEquals(original.toString(), loaded.toString());

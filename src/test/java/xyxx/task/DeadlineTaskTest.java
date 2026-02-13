@@ -9,6 +9,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -19,14 +20,14 @@ public class DeadlineTaskTest {
     @Test
     public void toStringContainsByTest() {
         PartialDateTime p = PartialDateTime.createDateTime(LocalDateTime.of(2021, 1, 2, 15, 30));
-        DeadlineTask d = new DeadlineTask("submit", p);
+        DeadlineTask d = new DeadlineTask("submit", p, List.of());
         assertTrue(d.toString().contains("(by:"));
     }
 
     @Test
     public void saveLoadRoundTripTest() throws IOException {
         PartialDateTime p = PartialDateTime.createDateTime(LocalDateTime.of(2021, 1, 2, 15, 30));
-        DeadlineTask original = new DeadlineTask("deadline", p);
+        DeadlineTask original = new DeadlineTask("deadline", p, List.of());
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(baos);
