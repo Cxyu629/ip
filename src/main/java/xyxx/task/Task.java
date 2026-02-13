@@ -41,6 +41,10 @@ public class Task {
         this.contactIds = contactIds;
     }
 
+    public Collection<String> getContactIds() {
+        return contactIds;
+    }
+
     /**
      * Returns a textual representation including completion state and description (e.g. "[X] Finish
      * report").

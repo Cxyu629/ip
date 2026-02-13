@@ -38,14 +38,7 @@ public class Contact {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Name: ").append(name).append("\n");
-        sb.append("Phone: ").append(phoneNumber).append("\n");
-        if (email != null) {
-            sb.append("Email: ").append(email).append("\n");
-        }
-        if (notes != null) {
-            sb.append("Notes: ").append(notes).append("\n");
-        }
+        sb.append(name).append(" (").append(phoneNumber).append(")");
         return sb.toString();
     }
 

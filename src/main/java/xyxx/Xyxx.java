@@ -2,6 +2,7 @@ package xyxx;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -26,27 +27,31 @@ import xyxx.task.TodoTask;
  */
 public class Xyxx {
     enum TaskAction {
-        MARK, UNMARK, DELETE,
+        MARK, UNMARK, DELETE, DETAILS,
     }
 
-    private static final Map<String, CommandDefinition> COMMANDS = Map.of("list",
-            new CommandDefinition("list", false, List.of()), "todo",
-            new CommandDefinition("todo", true, List.of()), "deadline",
-            new CommandDefinition("deadline", true,
-                    List.of(new ParamDefinition("by", true, ParamDefinition.Type.PARTIALDATETIME))),
-            "event",
-            new CommandDefinition("event", true,
-                    List.of(new ParamDefinition("from", true, ParamDefinition.Type.PARTIALDATETIME),
-                            new ParamDefinition("to", true, ParamDefinition.Type.PARTIALDATETIME))),
-            "mark", new CommandDefinition("mark", true, List.of()), "unmark",
-            new CommandDefinition("unmark", true, List.of()), "delete",
-            new CommandDefinition("delete", true, List.of()), "find",
-            new CommandDefinition("find", true, List.of()), "cadd",
-            new CommandDefinition("cadd", true,
-                    List.of(new ParamDefinition("name", true, ParamDefinition.Type.STRING),
-                            new ParamDefinition("number", true, ParamDefinition.Type.STRING))),
-            "cdelete", new CommandDefinition("cdelete", true,
-                    List.of(new ParamDefinition("number", true, ParamDefinition.Type.STRING))));
+    private static final Map<String, CommandDefinition> COMMANDS =
+            Map.ofEntries(Map.entry("list", new CommandDefinition("list", false, List.of())),
+                    Map.entry("todo", new CommandDefinition("todo", true, List.of())),
+                    Map.entry("deadline",
+                            new CommandDefinition("deadline", true,
+                                    List.of(new ParamDefinition("by", true,
+                                            ParamDefinition.Type.PARTIALDATETIME)))),
+                    Map.entry("event", new CommandDefinition("event", true, List.of(
+                            new ParamDefinition("from", true, ParamDefinition.Type.PARTIALDATETIME),
+                            new ParamDefinition("to", true,
+                                    ParamDefinition.Type.PARTIALDATETIME)))),
+                    Map.entry("mark", new CommandDefinition("mark", true, List.of())),
+                    Map.entry("unmark", new CommandDefinition("unmark", true, List.of())),
+                    Map.entry("delete", new CommandDefinition("delete", true, List.of())),
+                    Map.entry("find", new CommandDefinition("find", true, List.of())),
+                    Map.entry("details", new CommandDefinition("details", true, List.of())),
+                    Map.entry("cadd", new CommandDefinition("cadd", true,
+                            List.of(new ParamDefinition("name", true, ParamDefinition.Type.STRING),
+                                    new ParamDefinition("number", true,
+                                            ParamDefinition.Type.STRING)))),
+                    Map.entry("cdelete", new CommandDefinition("cdelete", true, List.of(
+                            new ParamDefinition("number", true, ParamDefinition.Type.STRING)))));
 
     private TaskList taskList;
     private ContactList contactList;
@@ -101,6 +106,8 @@ public class Xyxx {
                 return handleTaskActionCommand(parsed.subject(), TaskAction.DELETE);
             case "find":
                 return handleFindCommand(parsed.subject());
+            case "details":
+                return handleTaskActionCommand(parsed.subject(), TaskAction.DETAILS);
             case "cadd":
                 return handleContactAddCommand(parsed.params());
             case "cdelete":
@@ -207,6 +214,13 @@ public class Xyxx {
                 taskList.remove(taskNumber - 1);
                 return new Result(true,
                         String.format("Alright, I have it deleted!\n     %s", currentTask), false);
+            case DETAILS:
+                List<String> contactIds = new ArrayList<>(currentTask.getContactIds());
+                List<Contact> contacts = contactList.getContactsByIds(contactIds);
+                String contactDetails = contacts.stream().map(Contact::toString).reduce("",
+                        (a, b) -> a + "\n     " + b);
+                return new Result(true, String.format("Oh this one?\n     %s\nRelevant contacts:%s",
+                        currentTask, contactDetails), false);
             default:
                 assert false : "Unhandled TaskAction: " + action;
                 throw new UnsupportedOperationException("Unsupported task action: " + action);

@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class ContactList {
@@ -13,8 +14,21 @@ public class ContactList {
         contacts.add(contact);
     }
 
-    public ArrayList<Contact> getContacts() {
+    public List<Contact> getContacts() {
         return contacts;
+    }
+
+    public List<Contact> getContactsByIds(List<String> ids) {
+        List<Contact> result = new ArrayList<>();
+        for (String id : ids) {
+            for (Contact contact : contacts) {
+                if (contact.getId().equals(id)) {
+                    result.add(contact);
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
     public int size() {
