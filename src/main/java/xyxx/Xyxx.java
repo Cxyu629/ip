@@ -217,8 +217,8 @@ public class Xyxx {
             case DETAILS:
                 List<String> contactIds = new ArrayList<>(currentTask.getContactIds());
                 List<Contact> contacts = contactList.getContactsByIds(contactIds);
-                String contactDetails = contacts.stream().map(Contact::toString).reduce("",
-                        (a, b) -> a + "\n     " + b);
+                String contactDetails = contacts.stream().map(Contact::toString)
+                        .reduce("", (a, b) -> a + "\n     " + b);
                 return new Result(true, String.format("Oh this one?\n     %s\nRelevant contacts:%s",
                         currentTask, contactDetails), false);
             default:

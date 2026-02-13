@@ -3,8 +3,8 @@ package xyxx.task;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import xyxx.contact.Contact;
@@ -26,16 +26,12 @@ public class Task {
      * @param description the task description
      */
     public Task(String description, Collection<Contact> contacts) {
-        assert description != null
-                && !description.isBlank() : "Description must be a non-blank string.";
         this.description = description;
         this.contactIds = contacts.stream().map(Contact::getId).toList();
         this.isDone = false;
     }
 
     Task(String description, boolean isDone, Collection<String> contactIds) {
-        assert description != null
-                && !description.isBlank() : "Description must be a non-blank string.";
         this.description = description;
         this.isDone = isDone;
         this.contactIds = contactIds;
