@@ -50,7 +50,7 @@ public class ContactList {
         }
     }
 
-    void load(DataInputStream in) throws IOException {
+    public void load(DataInputStream in) throws IOException {
         int size = in.readInt();
         for (int i = 0; i < size; i++) {
             contacts.add(Contact.loadInstance(in));

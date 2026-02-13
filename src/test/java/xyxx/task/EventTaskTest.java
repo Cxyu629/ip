@@ -9,6 +9,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -20,7 +21,7 @@ public class EventTaskTest {
     public void toStringContainsFromToTest() {
         PartialDateTime f = PartialDateTime.createDateTime(LocalDateTime.of(2021, 3, 4, 10, 0));
         PartialDateTime t = PartialDateTime.createDateTime(LocalDateTime.of(2021, 3, 4, 12, 0));
-        EventTask e = new EventTask("meeting", f, t);
+        EventTask e = new EventTask("meeting", f, t, List.of());
         String s = e.toString();
         assertTrue(s.contains("(from:") && s.contains("to:"));
     }
@@ -29,7 +30,7 @@ public class EventTaskTest {
     public void saveLoadRoundTripTest() throws IOException {
         PartialDateTime f = PartialDateTime.createDateTime(LocalDateTime.of(2021, 3, 4, 10, 0));
         PartialDateTime t = PartialDateTime.createDateTime(LocalDateTime.of(2021, 3, 4, 12, 0));
-        EventTask original = new EventTask("event", f, t);
+        EventTask original = new EventTask("event", f, t, List.of());
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(baos);

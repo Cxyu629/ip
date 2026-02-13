@@ -2,6 +2,10 @@ package xyxx.task;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+
+import xyxx.contact.Contact;
 
 /**
  * A simple "todo" task.
@@ -12,8 +16,8 @@ public class TodoTask extends Task {
      *
      * @param description the task description
      */
-    public TodoTask(String description) {
-        super(description);
+    public TodoTask(String description, Collection<Contact> contacts) {
+        super(description, contacts);
     }
 
     /**
@@ -34,7 +38,7 @@ public class TodoTask extends Task {
      * @throws IOException if an I/O error occurs
      */
     public static TodoTask loadInstance(DataInputStream in) throws IOException {
-        TodoTask task = new TodoTask(null);
+        TodoTask task = new TodoTask(null, List.of());
         task.load(in);
         return task;
     }

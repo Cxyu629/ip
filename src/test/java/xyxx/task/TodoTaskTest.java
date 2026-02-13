@@ -7,6 +7,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
@@ -14,13 +15,13 @@ public class TodoTaskTest {
 
     @Test
     public void toStringPrefixTest() {
-        TodoTask t = new TodoTask("buy milk");
+        TodoTask t = new TodoTask("buy milk", List.of());
         assertEquals("[T][ ] buy milk", t.toString());
     }
 
     @Test
     public void saveLoadRoundTripTest() throws IOException {
-        TodoTask original = new TodoTask("remember");
+        TodoTask original = new TodoTask("remember", List.of());
         original.markAsDone();
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

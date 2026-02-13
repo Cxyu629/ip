@@ -2,6 +2,7 @@ package xyxx.parser;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,8 @@ import java.util.regex.Pattern;
 
 import xyxx.command.CommandDefinition;
 import xyxx.command.ParamDefinition;
+import xyxx.contact.Contact;
+import xyxx.contact.ContactList;
 import xyxx.datetime.PartialDateTime;
 
 /**
@@ -57,6 +60,21 @@ public final class Parser {
         Map<String, String> params = parseParams(definition, chunks.subList(1, chunks.size()));
 
         return new ParsedCommand(commandName, subject, params);
+    }
+
+    public Collection<Contact> parseContacts(String description, ContactList contactList) throws ParseException {
+        Collection<Contact> contacts = new ArrayList<>();
+        Pattern contactPattern = Pattern.compile("\\[(.+?)\\]");
+        Matcher matcher = contactPattern.matcher(description);
+        while (matcher.find()) {
+            String contactName = matcher.group(1).trim();
+            Optional<Contact> contact = contactList.findName(contactName);
+            if (contact.isEmpty()) {
+                throw new ParseException("Contact not found: " + contactName, 0);
+            }
+            contacts.add(contact.get());
+        }
+        return contacts;
     }
 
     private List<ChunkToken> tokenize(String input) {

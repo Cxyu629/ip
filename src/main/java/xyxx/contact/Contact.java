@@ -23,6 +23,18 @@ public class Contact {
         this.notes = notes;
     }
 
+    public String getId() {
+        return phoneNumber;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

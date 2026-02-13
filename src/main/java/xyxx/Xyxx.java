@@ -2,11 +2,14 @@ package xyxx;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
 import xyxx.command.CommandDefinition;
 import xyxx.command.ParamDefinition;
+import xyxx.contact.Contact;
+import xyxx.contact.ContactList;
 import xyxx.datetime.PartialDateTime;
 import xyxx.parser.ParsedCommand;
 import xyxx.parser.Parser;
@@ -38,18 +41,25 @@ public class Xyxx {
             "mark", new CommandDefinition("mark", true, List.of()), "unmark",
             new CommandDefinition("unmark", true, List.of()), "delete",
             new CommandDefinition("delete", true, List.of()), "find",
-            new CommandDefinition("find", true, List.of()));
+            new CommandDefinition("find", true, List.of()), "cadd",
+            new CommandDefinition("cadd", true,
+                    List.of(new ParamDefinition("name", true, ParamDefinition.Type.STRING),
+                            new ParamDefinition("number", true, ParamDefinition.Type.STRING))),
+            "cdelete", new CommandDefinition("cdelete", true,
+                    List.of(new ParamDefinition("number", true, ParamDefinition.Type.STRING))));
 
-    private TaskList tasks;
+    private TaskList taskList;
+    private ContactList contactList;
 
     private Parser parser = new Parser(COMMANDS);
 
     /**
-     * Initializes the Xyxx application by loading tasks from storage.
+     * Initializes the Xyxx application by loading tasks and contacts from storage.
      */
     public void init() {
         try {
-            tasks = Storage.load();
+            taskList = Storage.loadTaskList();
+            contactList = Storage.loadContactList();
         } catch (IOException e) {
             System.err.println(e);
         }
@@ -91,6 +101,10 @@ public class Xyxx {
                 return handleTaskActionCommand(parsed.subject(), TaskAction.DELETE);
             case "find":
                 return handleFindCommand(parsed.subject());
+            case "cadd":
+                return handleContactAddCommand(parsed.params());
+            case "cdelete":
+                return handleContactDeleteCommand(parsed.params());
             default:
                 return new Result(true, "I don't know what that means.", true);
             }
@@ -104,7 +118,8 @@ public class Xyxx {
      */
     public void close() {
         try {
-            Storage.save(tasks);
+            Storage.saveTasks(taskList);
+            Storage.saveContacts(contactList);
         } catch (IOException e) {
             System.err.println(e);
         }
@@ -115,8 +130,14 @@ public class Xyxx {
             return new Result(true, CommandFailureMessage.emptyTaskDescription(), true);
         }
 
-        TodoTask todo = new TodoTask(subject);
-        tasks.add(todo);
+        Collection<Contact> contacts;
+        try {
+            contacts = parser.parseContacts(subject, contactList);
+        } catch (ParseException e) {
+            return new Result(true, CommandFailureMessage.parseError(e.getMessage()), true);
+        }
+        TodoTask todo = new TodoTask(subject, contacts);
+        taskList.add(todo);
         return new Result(true, "Added todo: " + todo, false);
     }
 
@@ -125,12 +146,19 @@ public class Xyxx {
             return new Result(true, CommandFailureMessage.emptyTaskDescription(), true);
         }
 
+        Collection<Contact> contacts;
+        try {
+            contacts = parser.parseContacts(subject, contactList);
+        } catch (ParseException e) {
+            return new Result(true, CommandFailureMessage.parseError(e.getMessage()), true);
+        }
+
         String description = subject;
         String byString = params.get("by");
         PartialDateTime by = PartialDateTime.fromString(byString);
 
-        DeadlineTask deadline = new DeadlineTask(description, by);
-        tasks.add(deadline);
+        DeadlineTask deadline = new DeadlineTask(description, by, contacts);
+        taskList.add(deadline);
         return new Result(true, "Added deadline: " + deadline, false);
     }
 
@@ -139,26 +167,33 @@ public class Xyxx {
             return new Result(true, CommandFailureMessage.emptyTaskDescription(), true);
         }
 
+        Collection<Contact> contacts;
+        try {
+            contacts = parser.parseContacts(subject, contactList);
+        } catch (ParseException e) {
+            return new Result(true, CommandFailureMessage.parseError(e.getMessage()), true);
+        }
+
         String description = subject;
         String fromString = params.get("from");
         String toString = params.get("to");
         PartialDateTime from = PartialDateTime.fromString(fromString);
         PartialDateTime to = PartialDateTime.fromString(toString);
 
-        EventTask event = new EventTask(description, from, to);
-        tasks.add(event);
+        EventTask event = new EventTask(description, from, to, contacts);
+        taskList.add(event);
         return new Result(true, "Added event: " + event, false);
     }
 
     private Result handleTaskActionCommand(String subject, TaskAction action) {
         try {
             int taskNumber = Integer.parseInt(subject);
-            if (taskNumber < 1 || taskNumber > tasks.size()) {
+            if (taskNumber < 1 || taskNumber > taskList.size()) {
                 return new Result(true, CommandFailureMessage.taskIndexOutOfRange(taskNumber),
                         true);
             }
 
-            Task currentTask = tasks.get(taskNumber - 1);
+            Task currentTask = taskList.get(taskNumber - 1);
             switch (action) {
             case MARK:
                 currentTask.markAsDone();
@@ -169,7 +204,7 @@ public class Xyxx {
                 return new Result(true,
                         String.format("Alright, I have it unmarked!\n     %s", currentTask), false);
             case DELETE:
-                tasks.remove(taskNumber - 1);
+                taskList.remove(taskNumber - 1);
                 return new Result(true,
                         String.format("Alright, I have it deleted!\n     %s", currentTask), false);
             default:
@@ -186,7 +221,7 @@ public class Xyxx {
             return new Result(true, CommandFailureMessage.invalidFormat("find <query>"), true);
         }
 
-        TaskList found = tasks.filterByKeyword(subject.strip());
+        TaskList found = taskList.filterByKeyword(subject.strip());
 
         if (found.size() == 0) {
             return new Result(true, String.format("No tasks found matching \"%s\"", subject),
@@ -197,11 +232,34 @@ public class Xyxx {
     }
 
     private Result handleListCommand() {
-        if (tasks.size() == 0) {
+        if (taskList.size() == 0) {
             return new Result(true, "There's nothing here -_-", false);
         }
 
         String message = "Let's do this!\n";
-        return new Result(true, message + tasks.toString(), false);
+        return new Result(true, message + taskList.toString(), false);
+    }
+
+    private Result handleContactAddCommand(Map<String, String> params) {
+        String name = params.get("name");
+        String number = params.get("number");
+
+        Contact contact = new Contact(name, number);
+        contactList.add(contact);
+        return new Result(true, "Added contact: " + contact, false);
+    }
+
+    private Result handleContactDeleteCommand(Map<String, String> params) {
+        String number = params.get("number");
+
+        var contactOpt = contactList.findNumber(number);
+        if (contactOpt.isEmpty()) {
+            return new Result(true,
+                    String.format("Hmm I can't find a contact with number %s...", number), true);
+        }
+
+        Contact contact = contactOpt.get();
+        contactList.remove(contact);
+        return new Result(true, "Deleted contact: " + contact, false);
     }
 }
