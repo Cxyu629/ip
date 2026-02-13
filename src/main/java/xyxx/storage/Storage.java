@@ -39,7 +39,7 @@ public final class Storage {
     /**
      * Loads tasks from disk. Returns an empty {@link TaskList} if no file exists.
      *
-     * @return the loaded TaskList
+     * @return the loaded {@link TaskList}
      * @throws IOException if an I/O error occurs
      */
     public static TaskList loadTaskList() throws IOException {
@@ -52,7 +52,12 @@ public final class Storage {
         }
     }
 
-
+    /**
+     * Saves the provided {@link ContactList} to disk, creating the file if needed.
+     *
+     * @param contacts the contacts to save
+     * @throws IOException if an I/O error occurs
+     */
     public static void saveContacts(ContactList contacts) throws IOException {
         if (!CONTACTS_FILE.exists()) {
             CONTACTS_FILE.createNewFile();
@@ -63,6 +68,12 @@ public final class Storage {
         }
     }
 
+    /**
+     * Loads contacts from disk. Returns an empty {@link ContactList} if no file exists.
+     *
+     * @return the loaded {@link ContactList}
+     * @throws IOException if an I/O error occurs
+     */
     public static ContactList loadContactList() throws IOException {
         if (!CONTACTS_FILE.exists()) {
             return new ContactList();

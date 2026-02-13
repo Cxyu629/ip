@@ -62,6 +62,14 @@ public final class Parser {
         return new ParsedCommand(commandName, subject, params);
     }
 
+    /**
+     * Parses contact names from a task description and looks them up in the provided contact list.
+     * 
+     * @param description the task description
+     * @param contactList the contact list to look up contacts in
+     * @return a collection of contacts found in the description
+     * @throws ParseException
+     */
     public Collection<Contact> parseContacts(String description, ContactList contactList) throws ParseException {
         Collection<Contact> contacts = new ArrayList<>();
         Pattern contactPattern = Pattern.compile("\\[(.+?)\\]");

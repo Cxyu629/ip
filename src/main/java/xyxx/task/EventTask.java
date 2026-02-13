@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 import xyxx.contact.Contact;
 import xyxx.datetime.PartialDateTime;
@@ -39,7 +40,7 @@ public class EventTask extends Task {
      * @throws IOException if an I/O error occurs
      */
     public static EventTask loadInstance(DataInputStream in) throws IOException {
-        EventTask task = new EventTask(null, null, null, null);
+        EventTask task = new EventTask(null, null, null, List.of());
         task.load(in);
         return task;
     }

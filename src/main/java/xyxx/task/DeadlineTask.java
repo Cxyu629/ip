@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 
 import xyxx.contact.Contact;
 import xyxx.datetime.PartialDateTime;
@@ -34,7 +35,7 @@ public class DeadlineTask extends Task {
      * @throws IOException if an I/O error occurs
      */
     public static DeadlineTask loadInstance(DataInputStream in) throws IOException {
-        DeadlineTask task = new DeadlineTask(null, null, null);
+        DeadlineTask task = new DeadlineTask(null, null, List.of());
         task.load(in);
         return task;
     }
