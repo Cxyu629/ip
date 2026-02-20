@@ -9,7 +9,7 @@ The application is designed for users who prefer keyboard-driven productivity wi
 
 # Sample User Interface
 
-![XYXX User Interface](Ui.png)
+![XYXX User Interface](docs/Ui.png)
 
 The interface consists of a scrollable message display area and an input bar for command entry.
 
