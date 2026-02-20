@@ -12,10 +12,11 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.shape.Circle;
 
 /**
- * A custom control representing a dialog box in the GUI.
- * Consists of an ImageView to represent the speaker's face and a label containing text from the speaker.
+ * A custom control representing a dialog box in the GUI. Consists of an ImageView to represent the
+ * speaker's face and a label containing text from the speaker.
  */
 public class DialogBox extends HBox {
     @FXML
@@ -36,6 +37,8 @@ public class DialogBox extends HBox {
 
         dialog.setText(text);
         displayPicture.setImage(img);
+        Circle clip = new Circle(25, 25, 25);
+        displayPicture.setClip(clip);
     }
 
     private void flip() {
@@ -49,22 +52,25 @@ public class DialogBox extends HBox {
      * Creates a dialog box for the user.
      *
      * @param text the user input text
-     * @param img  the user image
+     * @param img the user image
      * @return the user dialog box
      */
     public static DialogBox getUserDialog(String text, Image img) {
-        return new DialogBox(text, img);
+        DialogBox db = new DialogBox(text, img);
+        db.dialog.getStyleClass().add("label-user");
+        return db;
     }
 
     /**
      * Creates a dialog box for Xyxx.
      *
      * @param text the Xyxx response text
-     * @param img  the Xyxx image
+     * @param img the Xyxx image
      * @return the Xyxx dialog box
      */
     public static DialogBox getXyxxDialog(String text, Image img) {
         var db = new DialogBox(text, img);
+        db.dialog.getStyleClass().add("label-bot");
         db.flip();
         return db;
     }

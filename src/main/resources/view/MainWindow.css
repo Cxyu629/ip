@@ -1,0 +1,7 @@
+.scroll-pane .viewport {
+    -fx-background-color: linear-gradient(
+        to bottom,
+        #fdf6e3,  /* very light cream at top */
+        #f5f5f5   /* soft gray at bottom */
+    );
+}

@@ -1,0 +1,12 @@
+.label-bot {
+    -fx-background-color: #e0e0e0;
+    -fx-padding: 5 10 5 10;
+    -fx-background-radius: 10;
+}
+
+.label-user {
+    -fx-background-color: #0078d7;
+    -fx-text-fill: white;
+    -fx-padding: 5 10 5 10;
+    -fx-background-radius: 10;
+}
